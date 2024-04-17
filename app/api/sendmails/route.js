@@ -1,3 +1,5 @@
+export const revalidate = 0;
+
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { DateTime } from "luxon";
