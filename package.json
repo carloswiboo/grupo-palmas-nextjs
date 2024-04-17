@@ -1,0 +1,38 @@
+{
+  "name": "gff-donations-nextjs",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@headlessui/react": "^1.7.18",
+    "@headlessui/tailwindcss": "^0.2.0",
+    "@mui/material": "^5.15.15",
+    "@prisma/client": "^5.12.1",
+    "@remixicon/react": "^4.2.0",
+    "@tremor/react": "^3.15.0",
+    "axios": "^1.6.8",
+    "bootstrap": "^5.3.3",
+    "jose": "^5.2.3",
+    "luxon": "^3.4.4",
+    "next": "14.1.4",
+    "nodemailer": "^6.9.13",
+    "react": "^18",
+    "react-dom": "^18"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.7",
+    "autoprefixer": "^10.0.1",
+    "eslint": "^8",
+    "eslint-config-next": "14.1.4",
+    "postcss": "^8",
+    "prisma": "^5.12.1",
+    "tailwindcss": "^3.4.3"
+  }
+}

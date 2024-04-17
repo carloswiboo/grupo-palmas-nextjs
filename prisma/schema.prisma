@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model smtp_configuration {
+  idsmtp_configuration Int       @id @default(autoincrement())
+  host                 String?   @db.Text
+  port                 String?   @db.Text
+  secure               String?   @db.Text
+  user                 String?   @db.Text
+  password             String?   @db.Text
+  status               Int?
+  created_at           DateTime? @default(now()) @db.DateTime(0)
+  updated_at           DateTime? @default(now()) @db.DateTime(0)
+}
+
+model mails {
+  idmails       Int             @id @default(autoincrement())
+  from          String?         @db.Text
+  to            String?         @db.Text
+  subject       String?         @db.Text
+  html          String?         @db.Text
+  status        Int?
+  created_at    DateTime?       @default(now()) @db.DateTime(0)
+  updated_At    DateTime?       @default(now()) @db.DateTime(0)
+  mail_schedule mail_schedule[]
+}
+
+model mail_schedule {
+  idmail_schedule Int       @id @default(autoincrement())
+  day             String?   @db.Text
+  time            String?   @db.Text
+  status          Int?
+  created_at      DateTime? @default(now()) @db.DateTime(0)
+  updated_at      DateTime? @default(now()) @db.DateTime(0)
+  idmails         Int
+  mails           mails     @relation(fields: [idmails], references: [idmails], onDelete: NoAction, onUpdate: NoAction, map: "FK_mail_schedule_mails")
+
+  @@index([idmails], map: "FK_mail_schedule_mails")
+}
