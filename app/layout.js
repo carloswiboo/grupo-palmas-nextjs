@@ -5,8 +5,8 @@ import "bootstrap/dist/css/bootstrap-grid.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "GFF - Donations",
-  description: "Your donation helps us greatly",
+  title: "Suzuki Palmas",
+  description: "Suzuki Palmas",
 };
 
 export default function RootLayout({ children }) {
