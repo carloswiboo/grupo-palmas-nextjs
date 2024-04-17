@@ -6,7 +6,11 @@ import nodemailer from "nodemailer";
 export async function GET(request) {
   try {
     //Primero obtengo el día actual
-    const currentDate = DateTime.now().setLocale("es");
+    const currentDate = DateTime.now()
+      .setZone("America/Mexico_City")
+      .setLocale("es");
+
+    debugger;
 
     //Aqui lo obtengo
     const actualDay = currentDate.weekdayLong;
