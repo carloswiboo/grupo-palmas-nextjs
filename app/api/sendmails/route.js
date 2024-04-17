@@ -13,13 +13,6 @@ export async function GET(request) {
 
     const horaActual = currentDate.toFormat("T");
 
-    // Me traigo la configuración de los smtp
-    const result = await prisma.smtp_configuration.findMany({
-      where: {
-        status: 1,
-      },
-    });
-
     //Me traigo los correos que tendríamos que mandar
 
     const resultMails = await prisma.mails.findMany({
@@ -68,7 +61,13 @@ export async function GET(request) {
       });
     }
 
-    return NextResponse.json(finalCorreosEnviar, { status: 200 });
+    let final = {
+      correosEnviados: finalCorreosEnviar,
+      diaServidor: actualDay,
+      horaServidor: horaActual,
+    };
+
+    return NextResponse.json(final, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
