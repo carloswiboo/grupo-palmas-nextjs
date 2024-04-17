@@ -51,12 +51,12 @@ export async function GET(request) {
 
     for (const iterator of finalCorreosEnviar) {
       const transporter = nodemailer.createTransport({
-        host: "smtp.office365.com",
-        port: 587,
+        host: process.env.SMTP_HOST,
+        port: process.env.SMTP_PORT,
         secure: false,
         auth: {
-          user: "carlos@wiboo.com.mx",
-          pass: "Sauron.993",
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASSWORD,
         },
       });
 
