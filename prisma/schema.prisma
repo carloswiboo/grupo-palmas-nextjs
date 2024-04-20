@@ -43,3 +43,57 @@ model mail_schedule {
 
   @@index([idmails], map: "FK_mail_schedule_mails")
 }
+
+model anios {
+  idanios Int       @id @default(autoincrement())
+  nombre  String?   @db.VarChar(45)
+  status  Int?
+  modelos modelos[]
+}
+
+model modelos {
+  idmodelos       Int               @id @default(autoincrement())
+  idanios         Int?
+  nombre          String?           @db.Text
+  frase           String?           @db.Text
+  imagen          String?           @db.Text
+  url             String?           @db.VarChar(45)
+  pdf             String?           @db.VarChar(45)
+  status          Int?
+  colores_modelos colores_modelos[]
+  anios           anios?            @relation(fields: [idanios], references: [idanios], onDelete: NoAction, onUpdate: NoAction, map: "FK_MODELO_ANIOS")
+  versiones       versiones[]
+
+  @@index([idanios], map: "FK_MODELO_ANIOS_idx")
+}
+
+model versiones {
+  idversiones Int      @id @default(autoincrement())
+  idmodelos   Int?
+  nombre      String?  @db.Text
+  precio      Decimal? @db.Decimal(10, 2)
+  status      Int?
+  modelos     modelos? @relation(fields: [idmodelos], references: [idmodelos], onDelete: NoAction, onUpdate: NoAction, map: "FK_VERSIONES_MODELOS")
+
+  @@index([idmodelos], map: "FK_VERSIONES_MODELOS_idx")
+}
+
+model colores {
+  idcolores       Int               @id @default(autoincrement())
+  nombre          String?           @db.Text
+  idstatus        Int?
+  colores_modelos colores_modelos[]
+}
+
+model colores_modelos {
+  idcolores_modelos Int      @id @default(autoincrement())
+  idcolores         Int?
+  idmodelos         Int?
+  url               String?  @db.Text
+  status            Int?
+  colores           colores? @relation(fields: [idcolores], references: [idcolores], onDelete: NoAction, onUpdate: NoAction, map: "FK_COLORES_MODELOS_COLORES")
+  modelos           modelos? @relation(fields: [idmodelos], references: [idmodelos], onDelete: NoAction, onUpdate: NoAction, map: "FK_COLORES_MODELOS_MODELOS")
+
+  @@index([idcolores], map: "FK_COLORES_MODELOS_COLORES_idx")
+  @@index([idmodelos], map: "FK_COLORES_MODELOS_MODELOS_idx")
+}
