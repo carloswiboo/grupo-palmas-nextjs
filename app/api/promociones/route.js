@@ -15,6 +15,7 @@ export async function GET(request) {
         fechaFin: {
           gte: new Date(), // Fecha actual o fecha límite superior
         },
+        status: 1,
       },
     });
 
