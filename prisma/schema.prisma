@@ -60,6 +60,7 @@ model modelos {
   url             String?           @db.VarChar(45)
   pdf             String?           @db.VarChar(45)
   status          Int?
+  orden           Int?
   colores_modelos colores_modelos[]
   anios           anios?            @relation(fields: [idanios], references: [idanios], onDelete: NoAction, onUpdate: NoAction, map: "FK_MODELO_ANIOS")
   versiones       versiones[]
@@ -96,4 +97,14 @@ model colores_modelos {
 
   @@index([idcolores], map: "FK_COLORES_MODELOS_COLORES_idx")
   @@index([idmodelos], map: "FK_COLORES_MODELOS_MODELOS_idx")
+}
+
+model promociones {
+  idpromociones Int       @id @default(autoincrement())
+  urlImagen     String?   @db.Text
+  urlDestino    String?   @db.Text
+  fechaInicio   DateTime? @db.DateTime(0)
+  fechaFin      DateTime? @db.DateTime(0)
+  created_at    DateTime? @default(now()) @db.DateTime(0)
+  updatet_at    DateTime? @default(now()) @db.DateTime(0)
 }
