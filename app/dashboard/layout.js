@@ -60,7 +60,6 @@ function classNames(...classes) {
 export default function DashboardLayout({ children }) {
   const pathname = usePathname();
 
-  debugger;
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [finalDataMenu, setFinalDataMenu] = React.useState([]);
