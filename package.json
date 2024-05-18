@@ -29,13 +29,14 @@
     "jwt-decode": "^4.0.0",
     "luxon": "^3.4.4",
     "next": "14.1.4",
+    "next-swagger-doc": "^0.4.0",
     "nodemailer": "^6.9.13",
     "react": "^18",
     "react-dom": "^18",
     "react-toastify": "^10.0.5",
+    "swagger-ui-react": "^5.17.10",
     "uuid": "^9.0.1",
-    "yup": "^1.4.0",
-    "zod": "^3.23.8"
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.7",
