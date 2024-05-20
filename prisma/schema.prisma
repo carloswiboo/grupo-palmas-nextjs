@@ -83,7 +83,7 @@ model versiones {
 model colores {
   idcolores       Int               @id @default(autoincrement())
   nombre          String?           @db.Text
-  idstatus        Int?
+  status          Int?
   colores_modelos colores_modelos[]
 }
 
