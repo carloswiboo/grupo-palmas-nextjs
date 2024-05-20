@@ -7,15 +7,15 @@ import nodemailer from "nodemailer";
 
 /**
  * @swagger
- * /api/anios/:
+ * /api/anios/{id}:
  *   get:
  *     description: Retorna el año público
  *     tags:
  *       - Público - Años
  *     parameters:
- *       - in: query
+ *       - in: path
  *         name: id
- *         required: false
+ *         required: true
  *         schema:
  *           type: integer
  *         description: El año que se desea consultar
@@ -24,11 +24,11 @@ import nodemailer from "nodemailer";
  *         description: Regresa los años activos
  */
 export async function GET(request, { params }) {
-  debugger;
   try {
-    const result = await prisma.anios.findMany({
+    const result = await prisma.anios.findUnique({
       where: {
         status: 1,
+        idanios: parseInt(params.id),
       },
     });
 

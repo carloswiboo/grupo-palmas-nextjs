@@ -3,8 +3,8 @@ import { Metadata } from "next";
 import ReactSwagger from "../components/swagger";
 
 export const metadata = {
-  title: "API Docs",
-  description: "API Documentation with Swagger for Nextjs",
+  title: "Documentación de API",
+  description: "Documentación de API para Suzuki Palmas API",
 };
 
 export default async function IndexPage() {
