@@ -4,6 +4,7 @@ import { parse, serialize } from "cookie";
 
 // This function can be marked `async` if using `await` inside
 export async function middleware(request) {
+  return NextResponse.next();
   let verifiedToken = await verifyAuth(request);
 
   if (Object.keys(verifiedToken).length === 0) {
