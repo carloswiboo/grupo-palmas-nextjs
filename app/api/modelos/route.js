@@ -5,6 +5,18 @@ import { NextResponse } from "next/server";
 import { DateTime } from "luxon";
 import nodemailer from "nodemailer";
 
+
+/**
+ * @swagger
+ * /api/modelos/:
+ *   get:
+ *     description: Retorna los modelos de Suzuki Actuales, activos y con estatus 1
+ *     tags:
+ *          - Público - Modelos Públicos
+ *     responses:
+ *       200:
+ *         description: Retorna Todos los detalles del auto
+ */
 export async function GET(request) {
   try {
     const result = await prisma.modelos.findMany({
