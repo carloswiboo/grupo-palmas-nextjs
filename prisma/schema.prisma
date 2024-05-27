@@ -178,7 +178,7 @@ model tiposrazoncontacto {
 }
 
 model usuarios {
-  idusuario       Int       @id
+  idusuario       Int       @id @default(autoincrement())
   nombre          String?   @db.VarChar(1000)
   apellidopaterno String?   @db.VarChar(1000)
   apellidomaterno String?   @db.VarChar(1000)
