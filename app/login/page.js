@@ -3,23 +3,33 @@ import React from "react";
 
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { postLoginUser } from "@/lib/api/apiLogin";
+import { toast } from "react-toastify";
 
 const LoginScreenComponent = () => {
   const [cargando, setCargando] = React.useState(false);
 
   const formik = useFormik({
     initialValues: {
-      email: "",
-      contrasena: "",
+      usuario: "",
+      password: "",
     },
     validationSchema: Yup.object({
-      email: Yup.string()
+      usuario: Yup.string()
         .email("Correo electrónico inválido")
         .required("Correo electrónico es requerido"),
-      contrasena: Yup.string().required("Contraseña es requerida"),
+      password: Yup.string().required("Contraseña es requerida"),
     }),
     onSubmit: (values) => {
       setCargando(true);
+      postLoginUser(values).then((resultado) => {
+        if (resultado.status == 200) {
+          window.location.reload();
+        } else {
+          setCargando(false);
+          toast.error("Ha ocurrido un error al iniciar la cuenta.");
+        }
+      });
     },
   });
 
@@ -46,11 +56,7 @@ const LoginScreenComponent = () => {
                 />
               </svg>
               <span class="sr-only">Loading...</span>
-              <div className="mt-3">
-                {" "}
-                <br />
-                Procesando, espera un poco
-              </div>
+              <div className="mt-3">Procesando, espera un poco</div>
             </div>
           </div>
         </div>
@@ -82,19 +88,19 @@ const LoginScreenComponent = () => {
               </label>
               <div className="mt-2">
                 <input
-                  id="email"
-                  name="email"
+                  id="usuario"
+                  name="usuario"
                   type="email"
-                  autoComplete="email"
+                  autoComplete="usuario"
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  value={formik.values.email}
+                  value={formik.values.usuario}
                 />
-                {formik.touched.email && formik.errors.email ? (
+                {formik.touched.email && formik.errors.usuario ? (
                   <div className="text-red-600 text-sm">
-                    {formik.errors.email}
+                    {formik.errors.usuario}
                   </div>
                 ) : null}
               </div>
@@ -119,19 +125,19 @@ const LoginScreenComponent = () => {
               </div>
               <div className="mt-2">
                 <input
-                  id="contrasena"
-                  name="contrasena"
+                  id="password"
+                  name="password"
                   type="password"
                   autoComplete="current-password"
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-red-600 sm:text-sm sm:leading-6"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  value={formik.values.contrasena}
+                  value={formik.values.password}
                 />
-                {formik.touched.contrasena && formik.errors.contrasena ? (
+                {formik.touched.contrasena && formik.errors.password ? (
                   <div className="text-red-600 text-sm">
-                    {formik.errors.contrasena}
+                    {formik.errors.password}
                   </div>
                 ) : null}
               </div>
