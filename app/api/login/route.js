@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 import { DateTime } from "luxon";
 import nodemailer from "nodemailer";
 import bcrypt from "bcryptjs";
+import { createToken } from "@/lib/createToken";
 
 /**
  * @swagger
@@ -57,7 +58,6 @@ import bcrypt from "bcryptjs";
  *                   example: 'Usuario y / contraseña no válidos.'
  */
 export async function POST(request) {
-  debugger;
   //Obtenemos primero el usuario y contraseña desde la llamada
   var resultado = await request.json();
   //Extraigo las variables
@@ -89,40 +89,28 @@ export async function POST(request) {
       );
     }
 
-    bcrypt.compare(password, user.password).then((isMatch) => {
-      /* User matched */
-      if (isMatch) {
-        debugger;
-        /* Create JWT Payload */
-        const payload = {
-          id: userId,
-          nombres: user[0].nombres,
-          apellidos: user[0].apellidos,
-          tipos_usuarios: user[0].tipos_usuarios,
-          ut: user[0].idtipos_usuarios,
-          email: userEmail,
-          fechaVencimiento: user[0].fechaVencimiento,
-        };
-        /* Sign token */
-        createToken(payload).then((token) => {
-          res.status(200).json({
-            success: true,
-            token: token,
-          });
-        });
-      } else {
-        /* Send error with message */
-        return NextResponse.json(
-          { error: "Contraseña Incorrecta" },
-          { status: 500 }
-        );
-        return;
-      }
-    });
+    const isMatch = await bcrypt.compare(password, user[0].contrasena);
+
+    delete user.contrasena;
+
+    if (isMatch == true) {
+      const payload = user[0];
+      delete payload.contrasena;
+      delete payload.activacion;
+      delete payload.cambiopassword;
+      debugger;
+      const token = await createToken(payload);
+
+      return NextResponse.json({ token: token }, { status: 500 });
+      debugger;
+    } else {
+      return NextResponse.json(
+        { error: "Contraseña Incorrecta" },
+        { status: 500 }
+      );
+    }
 
     //Si el usuario existe, hago el parseo de contraseña y verifico que todo este bien
-
-    return NextResponse.json(user, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
