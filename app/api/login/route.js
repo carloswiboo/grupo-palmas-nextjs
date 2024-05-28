@@ -6,6 +6,7 @@ import { DateTime } from "luxon";
 import nodemailer from "nodemailer";
 import bcrypt from "bcryptjs";
 import { createToken } from "@/lib/createToken";
+import cookie from "cookie";
 
 /**
  * @swagger
@@ -98,10 +99,24 @@ export async function POST(request) {
       delete payload.contrasena;
       delete payload.activacion;
       delete payload.cambiopassword;
-      debugger;
       const token = await createToken(payload);
+      const serializedCookie = cookie.serialize(
+        process.env.COOKIE_NAME,
+        token,
+        {
+          httpOnly: true,
+          secure: true, // Solo enviar a través de HTTPS
+          sameSite: "strict", // Mejorar la seguridad
+          maxAge: 60 * 60 * 24, // 1 día
+          path: "/",
+        }
+      );
 
-      return NextResponse.json({ token: token }, { status: 500 });
+      const response = NextResponse.json({ success: true }, { status: 200 });
+      response.headers.set("Set-Cookie", serializedCookie);
+
+      return response;
+
       debugger;
     } else {
       return NextResponse.json(
