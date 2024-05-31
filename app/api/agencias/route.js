@@ -23,6 +23,13 @@ export async function GET(request, { params }) {
       where: {
         status: 1,
       },
+      include: {
+        tiposagencias: {
+          where: {
+            status: 1,
+          },
+        },
+      },
     });
 
     return NextResponse.json(result, { status: 200 });

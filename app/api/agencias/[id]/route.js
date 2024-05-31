@@ -30,6 +30,13 @@ export async function GET(request, { params }) {
         status: 1,
         idagencias: parseInt(params.id),
       },
+      include: {
+        tiposagencias: {
+          where: {
+            status: 1,
+          },
+        },
+      },
     });
 
     return NextResponse.json(result, { status: 200 });

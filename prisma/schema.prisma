@@ -122,27 +122,31 @@ model menu {
 }
 
 model agencias {
-  idagencias     Int       @id @default(autoincrement())
-  nombre         String?   @db.Text
-  nombreCorto    String?   @db.Text
-  direccion      String?   @db.Text
-  correo         String?   @db.Text
-  reenvioCorreos String?   @db.Text
-  telefonoUno    String?   @db.Text
-  telefonoDos    String?   @db.Text
-  telefonoTres   String?   @db.Text
-  whatsappUno    String?   @db.Text
-  whatsappDos    String?   @db.Text
-  whatsappTres   String?   @db.Text
-  facebookUrl    String?   @db.Text
-  instagramUrl   String?   @db.Text
-  xUrl           String?   @db.Text
-  urlGoogleMaps  String?   @db.Text
-  urlSitio       String?   @db.Text
-  status         Int       @default(0)
-  created_at     DateTime? @default(now()) @db.DateTime(0)
-  updated_at     DateTime? @default(now()) @db.DateTime(0)
-  leads          leads[]
+  idagencias      Int            @id @default(autoincrement())
+  nombre          String?        @db.Text
+  nombreCorto     String?        @db.Text
+  direccion       String?        @db.Text
+  correo          String?        @db.Text
+  reenvioCorreos  String?        @db.Text
+  telefonoUno     String?        @db.Text
+  telefonoDos     String?        @db.Text
+  telefonoTres    String?        @db.Text
+  whatsappUno     String?        @db.Text
+  whatsappDos     String?        @db.Text
+  whatsappTres    String?        @db.Text
+  facebookUrl     String?        @db.Text
+  instagramUrl    String?        @db.Text
+  xUrl            String?        @db.Text
+  urlGoogleMaps   String?        @db.Text
+  urlSitio        String?        @db.Text
+  status          Int            @default(0)
+  created_at      DateTime?      @default(now()) @db.DateTime(0)
+  updated_at      DateTime?      @default(now()) @db.DateTime(0)
+  idtiposagencias Int?
+  tiposagencias   tiposagencias? @relation(fields: [idtiposagencias], references: [idtiposagencias], onDelete: NoAction, onUpdate: NoAction, map: "FK_agencias_tipos_agencias")
+  leads           leads[]
+
+  @@index([idtiposagencias], map: "FK_agencias_tipos_agencias_idx")
 }
 
 model leads {
@@ -189,4 +193,13 @@ model usuarios {
   activacion      String?   @db.VarChar(1000)
   cambiopassword  String?   @db.VarChar(1000)
   status          Int?
+}
+
+model tiposagencias {
+  idtiposagencias Int        @id @default(autoincrement())
+  nombre          String?    @db.VarChar(100)
+  created_at      DateTime?  @default(now()) @db.DateTime(0)
+  updated_at      DateTime?  @default(now()) @db.DateTime(0)
+  status          Int?
+  agencias        agencias[]
 }
