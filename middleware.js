@@ -4,7 +4,6 @@ import { parse, serialize } from "cookie";
 
 // This function can be marked `async` if using `await` inside
 export async function middleware(request) {
-  return NextResponse.next();
   let verifiedToken = await verifyAuth(request);
 
   if (Object.keys(verifiedToken).length === 0) {
@@ -17,10 +16,14 @@ export async function middleware(request) {
     response.headers.append("Set-Cookie", cookieString);
     return response;
   } else {
+    if (request.url.includes("login")) {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+
     return NextResponse.next();
   }
 }
 
 export const config = {
-  matcher: ["/api/private:path*", "/dashboard/:path*"],
+  matcher: ["/api/private:path*", "/dashboard/:path*", "/login/:path*"],
 };
