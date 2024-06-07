@@ -36,21 +36,21 @@ const teams = [
   {
     id: 1,
     name: "Contacto Informática",
-    href: "#",
+    href: "tel:+524777522331",
     initial: "TI",
     current: false,
   },
   {
     id: 2,
     name: "Contacto Marketing",
-    href: "#",
+    href: "tel:+524777522331",
     initial: "MKT",
     current: false,
   },
 ];
 const userNavigation = [
-  { name: "Your profile", href: "#" },
-  { name: "Sign out", href: "#" },
+  { name: "Mi perfil", href: "#" },
+  { name: "Cerrar Sesión", href: "#" },
 ];
 
 function classNames(...classes) {
