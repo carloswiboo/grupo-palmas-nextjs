@@ -16,14 +16,18 @@ export async function middleware(request) {
     response.headers.append("Set-Cookie", cookieString);
     return response;
   } else {
-    if (request.url.includes("login")) {
+    if (request.url.includes("login") || request.url.includes("recover")) {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
-
     return NextResponse.next();
   }
 }
 
 export const config = {
-  matcher: ["/api/private:path*", "/dashboard/:path*", "/login/:path*"],
+  matcher: [
+    "/api/private:path*",
+    "/dashboard/:path*",
+    "/login/:path*",
+    "/recover/:path*",
+  ],
 };
