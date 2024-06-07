@@ -104,7 +104,7 @@ export async function POST(request) {
         process.env.COOKIE_NAME,
         token,
         {
-          httpOnly: true,
+          httpOnly: false,
           secure: true, // Solo enviar a través de HTTPS
           sameSite: "strict", // Mejorar la seguridad
           maxAge: 60 * 60 * 24, // 1 día

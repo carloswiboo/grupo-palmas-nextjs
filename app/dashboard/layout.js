@@ -17,6 +17,7 @@ import {
   ChevronDownIcon,
   MagnifyingGlassIcon,
 } from "@heroicons/react/20/solid";
+import Cookies from "js-cookie";
 
 import * as HeroIcons from "@heroicons/react";
 import { getMenuPrivateApi } from "@/lib/api/apiMenu";
@@ -35,14 +36,14 @@ const navigation = [
 const teams = [
   {
     id: 1,
-    name: "Contacto Informática",
+    name: "Informática",
     href: "tel:+524777522331",
     initial: "TI",
     current: false,
   },
   {
     id: 2,
-    name: "Contacto Marketing",
+    name: "Marketing",
     href: "tel:+524777522331",
     initial: "MKT",
     current: false,
@@ -72,6 +73,15 @@ export default function DashboardLayout({ children }) {
         setFinalDataMenu([]);
       }
     });
+  }, []);
+
+  React.useEffect(() => {
+    let nombre = process.env.NEXT_PUBLIC_COOKIE_NAME;
+
+    let hola = Cookies.get(process.env.NEXT_PUBLIC_COOKIE_NAME);
+
+
+    debugger;
   }, []);
 
   return (
@@ -142,25 +152,29 @@ export default function DashboardLayout({ children }) {
                       <ul role="list" className="flex flex-1 flex-col gap-y-7">
                         <li>
                           <ul role="list" className="-mx-2 space-y-1">
-                            {finalDataMenu.map((item) => (
-                              <li key={item.idmenu}>
-                                <a
-                                  href={item.enlace}
-                                  className={classNames(
-                                    item.enlace.includes(pathname)
-                                      ? "bg-indigo-700 text-white"
-                                      : "text-indigo-200 hover:text-white hover:bg-indigo-700",
-                                    "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
-                                  )}
-                                >
-                                  <ConvertTextToIconComponent
-                                    className={`h-6 w-6 shrink-0`}
-                                    textIcon={item.icono}
-                                  />
-                                  {item.nombre}
-                                </a>
-                              </li>
-                            ))}
+                            {finalDataMenu.map((item) => {
+                              let resultado = pathname.includes(item.enlace);
+
+                              return (
+                                <li key={item.idmenu}>
+                                  <a
+                                    href={"/dashboard" + item.enlace}
+                                    className={classNames(
+                                      resultado
+                                        ? "bg-indigo-700 text-white"
+                                        : "text-indigo-200 hover:text-white hover:bg-indigo-700",
+                                      "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                                    )}
+                                  >
+                                    <ConvertTextToIconComponent
+                                      className={`h-6 w-6 shrink-0`}
+                                      textIcon={item.icono}
+                                    />
+                                    {item.nombre}
+                                  </a>
+                                </li>
+                              );
+                            })}
                           </ul>
                         </li>
                         <li>
@@ -179,7 +193,7 @@ export default function DashboardLayout({ children }) {
                                     "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
                                   )}
                                 >
-                                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-indigo-400 bg-indigo-500 text-[0.625rem] font-medium text-white">
+                                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-indigo-400 bg-indigo-500 text-[0.425rem] font-medium text-white">
                                     {team.initial}
                                   </span>
                                   <span className="truncate">{team.name}</span>
@@ -212,7 +226,7 @@ export default function DashboardLayout({ children }) {
         {/* Static sidebar for desktop */}
         <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
-          <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gradient-to-r from-cyan-500 to-blue-500 px-6 pb-4">
+          <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-blue-600 px-6 pb-4">
             <div className="flex h-16 shrink-0 items-center">
               <img
                 className="h-20 w-auto mx-auto mt-2"
@@ -224,25 +238,32 @@ export default function DashboardLayout({ children }) {
               <ul role="list" className="flex flex-1 flex-col gap-y-7">
                 <li>
                   <ul role="list" className="-mx-2 space-y-1">
-                    {finalDataMenu.map((item) => (
-                      <li key={item.idmenu}>
-                        <a
-                          href={item.enlace}
-                          className={classNames(
-                            item.enlace.includes(pathname)
-                              ? "bg-indigo-700 text-white"
-                              : "text-indigo-200 hover:text-white hover:bg-indigo-700",
-                            "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
-                          )}
-                        >
-                          <ConvertTextToIconComponent
-                            className={`h-6 w-6 shrink-0`}
-                            textIcon={item.icono}
-                          />
-                          {item.nombre}
-                        </a>
-                      </li>
-                    ))}
+                    {finalDataMenu.map((item) => {
+                      debugger;
+
+                      let resultado = pathname.includes(item.enlace);
+
+                      debugger;
+                      return (
+                        <li key={item.idmenu}>
+                          <a
+                            href={"/dashboard" + item.enlace}
+                            className={classNames(
+                              resultado
+                                ? "bg-indigo-700 text-white"
+                                : "text-indigo-200 hover:text-white hover:bg-indigo-700",
+                              "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                            )}
+                          >
+                            <ConvertTextToIconComponent
+                              className={`h-6 w-6 shrink-0`}
+                              textIcon={item.icono}
+                            />
+                            {item.nombre}
+                          </a>
+                        </li>
+                      );
+                    })}
                   </ul>
                 </li>
                 <li>
@@ -261,7 +282,7 @@ export default function DashboardLayout({ children }) {
                             "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
                           )}
                         >
-                          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-indigo-400 bg-indigo-500 text-[0.625rem] font-medium text-white">
+                          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-indigo-400 bg-indigo-500 text-[0.425rem] font-medium text-white">
                             {team.initial}
                           </span>
                           <span className="truncate">{team.name}</span>
@@ -279,7 +300,7 @@ export default function DashboardLayout({ children }) {
                       className="h-6 w-6 shrink-0 text-indigo-200 group-hover:text-white"
                       aria-hidden="true"
                     />
-                    Settings
+                    Configuración
                   </a>
                 </li>
               </ul>
