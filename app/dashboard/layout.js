@@ -18,7 +18,7 @@ import {
   MagnifyingGlassIcon,
 } from "@heroicons/react/20/solid";
 import Cookies from "js-cookie";
-
+import Link from "next/link";
 import * as HeroIcons from "@heroicons/react";
 import { getMenuPrivateApi } from "@/lib/api/apiMenu";
 import ConvertTextToIconComponent from "@/components/ConvertTextToIconComponent";
@@ -168,21 +168,22 @@ export default function DashboardLayout({ children }) {
 
                               return (
                                 <li key={item.idmenu}>
-                                  <a
-                                    href={"/dashboard" + item.enlace}
-                                    className={classNames(
-                                      resultado
-                                        ? "bg-indigo-700 text-white"
-                                        : "text-indigo-200 hover:text-white hover:bg-indigo-700",
-                                      "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
-                                    )}
-                                  >
-                                    <ConvertTextToIconComponent
-                                      className={`h-6 w-6 shrink-0`}
-                                      textIcon={item.icono}
-                                    />
-                                    {item.nombre}
-                                  </a>
+                                  <Link href={"/dashboard" + item.enlace}>
+                                    <div
+                                      className={classNames(
+                                        resultado
+                                          ? "bg-indigo-700 text-white"
+                                          : "text-indigo-200 hover:text-white hover:bg-indigo-700",
+                                        "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold cursor-pointer"
+                                      )}
+                                    >
+                                      <ConvertTextToIconComponent
+                                        className={`h-6 w-6 shrink-0`}
+                                        textIcon={item.icono}
+                                      />
+                                      {item.nombre}
+                                    </div>
+                                  </Link>
                                 </li>
                               );
                             })}
@@ -259,21 +260,22 @@ export default function DashboardLayout({ children }) {
                       }
                       return (
                         <li key={item.idmenu}>
-                          <a
-                            href={"/dashboard" + item.enlace}
-                            className={classNames(
-                              resultado
-                                ? "bg-red-800 text-white"
-                                : "text-indigo-200 hover:text-white hover:bg-red-800",
-                              "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
-                            )}
-                          >
-                            <ConvertTextToIconComponent
-                              className={`h-6 w-6 shrink-0`}
-                              textIcon={item.icono}
-                            />
-                            {item.nombre}
-                          </a>
+                          <Link href={"/dashboard" + item.enlace}>
+                            <div
+                              className={classNames(
+                                resultado
+                                  ? "bg-red-800 text-white"
+                                  : "text-indigo-200 hover:text-white hover:bg-red-800",
+                                "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold cursor-pointer"
+                              )}
+                            >
+                              <ConvertTextToIconComponent
+                                className={`h-6 w-6 shrink-0`}
+                                textIcon={item.icono}
+                              />
+                              {item.nombre}
+                            </div>
+                          </Link>
                         </li>
                       );
                     })}
