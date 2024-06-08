@@ -112,13 +112,14 @@ model promociones {
 }
 
 model menu {
-  idmenu     Int       @id @default(autoincrement())
-  nombre     String?   @db.Text
-  icono      String?   @db.Text
-  enlace     String?   @db.Text
-  status     Int?
-  created_at DateTime? @default(now()) @db.DateTime(0)
-  updated_at DateTime? @default(now()) @db.DateTime(0)
+  idmenu         Int              @id @default(autoincrement())
+  nombre         String?          @db.Text
+  icono          String?          @db.Text
+  enlace         String?          @db.Text
+  status         Int?
+  created_at     DateTime?        @default(now()) @db.DateTime(0)
+  updated_at     DateTime?        @default(now()) @db.DateTime(0)
+  funciones_menu funciones_menu[]
 }
 
 model agencias {
@@ -202,4 +203,17 @@ model tiposagencias {
   updated_at      DateTime?  @default(now()) @db.DateTime(0)
   status          Int?
   agencias        agencias[]
+}
+
+model funciones_menu {
+  idfunciones_menu Int       @id @default(autoincrement())
+  idmenu           Int?
+  nombre           String?   @db.VarChar(45)
+  slug             String?   @db.VarChar(45)
+  status           Int?
+  created_at       DateTime? @default(now()) @db.DateTime(0)
+  updated_at       DateTime? @default(now()) @db.DateTime(0)
+  menu             menu?     @relation(fields: [idmenu], references: [idmenu], onDelete: NoAction, onUpdate: NoAction, map: "fk_funciones_menu_menu")
+
+  @@index([idmenu], map: "fk_funciones_menu_menu_idx")
 }
