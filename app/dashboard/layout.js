@@ -24,6 +24,7 @@ import { getMenuPrivateApi } from "@/lib/api/apiMenu";
 import ConvertTextToIconComponent from "@/components/ConvertTextToIconComponent";
 
 import { usePathname } from "next/navigation";
+import { jwtDecode } from "jwt-decode";
 
 const navigation = [
   { name: "Dashboard", href: "#", icon: HomeIcon, current: true },
@@ -65,6 +66,8 @@ export default function DashboardLayout({ children }) {
 
   const [finalDataMenu, setFinalDataMenu] = React.useState([]);
 
+  const [finalDataUsuario, setFinalDataUsuario] = React.useState({});
+
   React.useEffect(() => {
     getMenuPrivateApi().then((resultado) => {
       if (resultado.status == 200) {
@@ -79,9 +82,9 @@ export default function DashboardLayout({ children }) {
     let nombre = process.env.NEXT_PUBLIC_COOKIE_NAME;
 
     let hola = Cookies.get(process.env.NEXT_PUBLIC_COOKIE_NAME);
+    let decodedToken = jwtDecode(hola);
 
-
-    debugger;
+    setFinalDataUsuario(decodedToken);
   }, []);
 
   return (
@@ -140,7 +143,7 @@ export default function DashboardLayout({ children }) {
                     </div>
                   </Transition.Child>
                   {/* Sidebar component, swap this element with another sidebar if you like */}
-                  <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-blue-600 px-6 pb-4">
+                  <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-blue-950 px-6 pb-4">
                     <div className="flex h-16 shrink-0 items-center">
                       <img
                         className="h-20 w-auto mx-auto mt-2"
@@ -153,7 +156,15 @@ export default function DashboardLayout({ children }) {
                         <li>
                           <ul role="list" className="-mx-2 space-y-1">
                             {finalDataMenu.map((item) => {
-                              let resultado = pathname.includes(item.enlace);
+                              let resultado;
+                              if (
+                                pathname == "/dashboard" &&
+                                item.enlace == "/"
+                              ) {
+                                resultado = true;
+                              } else if (item.enlace !== "/") {
+                                resultado = pathname.includes(item.enlace);
+                              }
 
                               return (
                                 <li key={item.idmenu}>
@@ -188,12 +199,12 @@ export default function DashboardLayout({ children }) {
                                   href={team.href}
                                   className={classNames(
                                     team.current
-                                      ? "bg-indigo-700 text-white"
-                                      : "text-indigo-200 hover:text-white hover:bg-indigo-700",
+                                      ? "bg-rose-700 text-white"
+                                      : "text-indigo-200 hover:text-white hover:bg-rose-700",
                                     "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
                                   )}
                                 >
-                                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-indigo-400 bg-indigo-500 text-[0.425rem] font-medium text-white">
+                                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-rose-400 bg-rose-500 text-[0.425rem] font-medium text-white">
                                     {team.initial}
                                   </span>
                                   <span className="truncate">{team.name}</span>
@@ -226,7 +237,7 @@ export default function DashboardLayout({ children }) {
         {/* Static sidebar for desktop */}
         <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
-          <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-blue-600 px-6 pb-4">
+          <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-blue-950 px-6 pb-4">
             <div className="flex h-16 shrink-0 items-center">
               <img
                 className="h-20 w-auto mx-auto mt-2"
@@ -239,19 +250,21 @@ export default function DashboardLayout({ children }) {
                 <li>
                   <ul role="list" className="-mx-2 space-y-1">
                     {finalDataMenu.map((item) => {
-                      debugger;
+                      let resultado;
 
-                      let resultado = pathname.includes(item.enlace);
-
-                      debugger;
+                      if (pathname == "/dashboard" && item.enlace == "/") {
+                        resultado = true;
+                      } else if (item.enlace !== "/") {
+                        resultado = pathname.includes(item.enlace);
+                      }
                       return (
                         <li key={item.idmenu}>
                           <a
                             href={"/dashboard" + item.enlace}
                             className={classNames(
                               resultado
-                                ? "bg-indigo-700 text-white"
-                                : "text-indigo-200 hover:text-white hover:bg-indigo-700",
+                                ? "bg-red-800 text-white"
+                                : "text-indigo-200 hover:text-white hover:bg-red-800",
                               "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
                             )}
                           >
@@ -277,12 +290,12 @@ export default function DashboardLayout({ children }) {
                           href={team.href}
                           className={classNames(
                             team.current
-                              ? "bg-indigo-700 text-white"
-                              : "text-indigo-200 hover:text-white hover:bg-indigo-700",
+                              ? "bg-rose-800 text-white"
+                              : "text-indigo-200 hover:text-white hover:bg-rose-800",
                             "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
                           )}
                         >
-                          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-indigo-400 bg-indigo-500 text-[0.425rem] font-medium text-white">
+                          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-rose-400 bg-rose-500 text-[0.425rem] font-medium text-white">
                             {team.initial}
                           </span>
                           <span className="truncate">{team.name}</span>
@@ -328,7 +341,7 @@ export default function DashboardLayout({ children }) {
             <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
               <form className="relative flex flex-1" action="#" method="GET">
                 <label htmlFor="search-field" className="sr-only">
-                  Search
+                  Buscar
                 </label>
                 <MagnifyingGlassIcon
                   className="pointer-events-none absolute inset-y-0 left-0 h-full w-5 text-gray-400"
@@ -337,7 +350,7 @@ export default function DashboardLayout({ children }) {
                 <input
                   id="search-field"
                   className="block h-full w-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm"
-                  placeholder="Search..."
+                  placeholder="Buscar"
                   type="search"
                   name="search"
                 />
@@ -361,17 +374,23 @@ export default function DashboardLayout({ children }) {
                 <Menu as="div" className="relative">
                   <Menu.Button className="-m-1.5 flex items-center p-1.5">
                     <span className="sr-only">Open user menu</span>
-                    <img
-                      className="h-8 w-8 rounded-full bg-gray-50"
-                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                      alt=""
-                    />
+
+                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-red-500">
+                      <span className="text-sm font-medium leading-none text-white">
+                        {finalDataUsuario?.nombre?.charAt(0).toUpperCase()}{" "}
+                        {finalDataUsuario?.apellidopaterno
+                          ?.charAt(0)
+                          .toUpperCase()}{" "}
+                      </span>
+                    </span>
+
                     <span className="hidden lg:flex lg:items-center">
                       <span
                         className="ml-4 text-sm font-semibold leading-6 text-gray-900"
                         aria-hidden="true"
                       >
-                        Tom Cook
+                        {finalDataUsuario.nombre}{" "}
+                        {finalDataUsuario.apellidopaterno}{" "}
                       </span>
                       <ChevronDownIcon
                         className="ml-2 h-5 w-5 text-gray-400"

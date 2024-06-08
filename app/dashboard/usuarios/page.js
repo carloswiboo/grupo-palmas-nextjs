@@ -9,9 +9,7 @@ export default function Page({ params, searchParams }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getBannersPrivateApi().then((resultado) => {
-      debugger;
-    });
+    getBannersPrivateApi().then((resultado) => {});
   }, [crud, loading]);
 
   return <h1>My Page</h1>;

@@ -10,7 +10,7 @@ export default function Page({ params, searchParams }) {
 
   useEffect(() => {
     getBannersPrivateApi().then((resultado) => {
-      debugger;
+    
     });
   }, [crud, loading]);
 
