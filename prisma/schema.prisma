@@ -107,7 +107,7 @@ model promociones {
   fechaInicio   DateTime? @db.DateTime(0)
   fechaFin      DateTime? @db.DateTime(0)
   created_at    DateTime? @default(now()) @db.DateTime(0)
-  updatet_at    DateTime? @default(now()) @db.DateTime(0)
+  updated_at    DateTime? @default(now()) @db.DateTime(0)
   status        Int?
 }
 

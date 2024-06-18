@@ -5,7 +5,6 @@ import { NextResponse } from "next/server";
 import { DateTime } from "luxon";
 import nodemailer from "nodemailer";
 
-
 /**
  * @swagger
  * /api/promociones/:
@@ -22,10 +21,10 @@ export async function GET(request) {
     const promocionesEnRango = await prisma.promociones.findMany({
       where: {
         fechaInicio: {
-          lte: new Date(), // Fecha actual o fecha límite inferior
+          lte: new Date().toISOString(), // Fecha actual o fecha límite inferior
         },
         fechaFin: {
-          gte: new Date(), // Fecha actual o fecha límite superior
+          gte: new Date().toISOString(), // Fecha actual o fecha límite superior
         },
         status: 1,
       },
