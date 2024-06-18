@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { getMenuYfunciones } from "../../../lib/api/apiMenuYFunciones";
+import CardMenuPermisosComponent from "@/app/components/CardMenuPermisosComponent/CardMenuPermisosComponent";
 
 const MenuYFuncionesScreenComponent = () => {
   const [finalData, setFinalData] = React.useState([]);
