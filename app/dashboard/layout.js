@@ -31,6 +31,9 @@ import "@shopify/polaris/build/esm/styles.css";
 import esTranslations from "@shopify/polaris/locales/es.json";
 import { AppProvider } from "@shopify/polaris";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const navigation = [
   { name: "Dashboard", href: "#", icon: HomeIcon, current: true },
   { name: "Team", href: "#", icon: UsersIcon, current: false },
@@ -448,6 +451,7 @@ export default function DashboardLayout({ children }) {
             </main>
           </div>
         </div>
+        <ToastContainer />
       </AppProvider>
     </>
   );

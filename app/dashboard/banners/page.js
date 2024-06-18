@@ -65,13 +65,13 @@ export default function Page({ params, searchParams }) {
                   <li>
                     <strong>Inicia:</strong>{" "}
                     {DateTime.fromISO(item.fechaInicio)
-                      .setZone("UTC")
+                      .setZone("America/Mexico_City")
                       .toFormat("f")}
                   </li>
-                  <li>
+                  <li>  
                     <strong>Termina:</strong>{" "}
                     {DateTime.fromISO(item.fechaFin)
-                      .setZone("UTC")
+                      .setZone("America/Mexico_City")
                       .toFormat("f")}
                   </li>
                 </ul>

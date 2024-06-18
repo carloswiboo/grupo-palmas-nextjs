@@ -3,6 +3,13 @@ import { data } from "autoprefixer";
 import React from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
+import {
+  deleteBannersPrivateApi,
+  patchCreateBannersPrivateApi,
+  postCreateBannersPrivateApi,
+} from "@/lib/api/apiBanners";
+import { toast } from "react-toastify";
+import { DateTime } from "luxon";
 
 const validationSchema = yup.object({
   urlImagen: yup.string("Ingresa").required("Requerido"),
@@ -31,12 +38,61 @@ const CrudPromocionesComponent = ({ crud, setCrud, titulo }) => {
     initialValues: {
       urlImagen: crud.type !== "create" ? crud.data.urlImagen : "",
       urlDestino: crud.type !== "create" ? crud.data.urlDestino : "",
-      fechaInicio: crud.type !== "create" ? crud.data.fechaInicio : "",
-      fechaFin: crud.type !== "create" ? crud.data.fechaFin : "",
+      fechaInicio:
+        crud.type !== "create"
+          ? DateTime.fromISO(crud.data.fechaInicio)
+              .setZone("local")
+              .toFormat("yyyy-LL-dd'T'HH:mm")
+          : "",
+      fechaFin:
+        crud.type !== "create"
+          ? DateTime.fromISO(crud.data.fechaFin)
+              .setZone("local")
+              .toFormat("yyyy-LL-dd'T'HH:mm")
+          : "",
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      debugger;
+      setIsDisabled(true);
+      values.fechaInicio = values.fechaInicio.replace("T", " ");
+      values.fechaFin = values.fechaFin.replace("T", " ");
+
+      if (crud.type == "create") {
+        postCreateBannersPrivateApi(values).then((resultado) => {
+          if (resultado.status == 200) {
+            toast.success("Promoción Creada Correctamente");
+            setCrud({ type: null, data: null });
+          } else {
+            setIsDisabled(false);
+            toast.error("Ha ocurrido un error al publicar la promoción");
+          }
+        });
+      }
+      if (crud.type == "edit") {
+        values.idpromociones = crud.data.idpromociones;
+        patchCreateBannersPrivateApi(values).then((resultado) => {
+          if (resultado.status == 200) {
+            toast.success("Promoción Modificada Correctamente");
+            setCrud({ type: null, data: null });
+          } else {
+            setIsDisabled(false);
+            toast.error("Ha ocurrido un error al publicar la promoción");
+          }
+        });
+      }
+      if (crud.type == "delete") {
+        values.idpromociones = crud.data.idpromociones;
+        deleteBannersPrivateApi(values).then((resultado) => {
+          if (resultado.status == 200) {
+            toast.success("Promoción creada correctamente");
+            setCrud({ type: null, data: null });
+          } else {
+            setIsDisabled(false);
+            toast.error("Ha ocurrido un error al publicar la promoción");
+          }
+        });
+      }
+
       setIsDisabled(true);
     },
   });
@@ -74,110 +130,108 @@ const CrudPromocionesComponent = ({ crud, setCrud, titulo }) => {
                 <br />
               </div>
             </div>
-            <div className="grid grid-cols-1 gap-1 content-center md:grid-cols-2 mt-3">
-              <div>
-                {" "}
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce
-                tempor tincidunt augue, id finibus ipsum. Pellentesque habitant
-                morbi tristique senectus et netus et malesuada fames ac turpis
-                egestas. Ut convallis lacinia magna sollicitudin tincidunt. Duis
-                feugiat massa non cursus rutrum. Morbi ac consequat nulla.
-                Suspendisse bibendum erat urna, id iaculis justo porta at. Ut
-                dictum leo sit amet est aliquet, sed gravida turpis congue.
-                Aenean mattis, erat vel efficitur cursus, ante ante semper
-                lectus, vitae gravida neque sem et arcu. In feugiat sit amet
-                lacus sit amet fringilla. Ut dictum dui at metus ultricies
-                pellentesque. Maecenas facilisis arcu ut enim blandit ultrices.
-                Aenean ac sapien non ipsum mollis luctus fermentum quis ipsum.
-                Vestibulum ante ipsum primis in faucibus orci luctus et ultrices
-                posuere cubilia curae; Vestibulum nibh quam, posuere quis
-                dignissim eget, semper non lacus. Fusce est turpis, convallis ac
-                metus sed, consequat ornare nisl. Cras non bibendum nisl. Nunc
-                pulvinar ultrices orci, sed tristique lectus elementum id. Nam
-                tincidunt placerat dui ut ullamcorper. Quisque ut sollicitudin
-                nisi, semper tincidunt velit. Maecenas non turpis est.
-                Suspendisse lobortis sed nisi vel volutpat. Nam semper rhoncus
-                arcu, eu scelerisque velit hendrerit vitae. Ut dictum tortor eu
-                elit aliquet consectetur. Sed ac nisl non turpis faucibus
-                ultricies. Ut dictum ac nisi eget volutpat. Nam a magna aliquet,
-                luctus libero et, volutpat libero. Maecenas placerat quam non
-                sagittis egestas. Duis malesuada venenatis magna, at pretium
-                magna cursus et. Nunc id aliquet mauris. Maecenas quam ante,
-                elementum vitae rutrum non, pellentesque ut lectus. Aenean ac
-                semper augue. Aenean eu arcu fermentum, malesuada tortor nec,
-                blandit orci. Vivamus viverra viverra neque at fringilla. Etiam
-                elit felis, vehicula in luctus nec, consequat at neque. Quisque
-                quis enim imperdiet, egestas tellus at, elementum metus. Duis
-                tincidunt ex sit amet gravida ullamcorper. Vestibulum vitae arcu
-                ullamcorper, pretium tellus eget, vestibulum risus. Donec id
-                metus vitae felis vulputate tincidunt. Vestibulum sit amet
-                vehicula dui. Nam quis arcu et urna euismod ultrices.
-                Suspendisse et iaculis tellus. Curabitur sed risus nec quam
-                accumsan euismod. Donec eget porttitor velit. Maecenas eu leo
-                elit. Vestibulum luctus sapien et massa commodo elementum.
-                Integer a bibendum erat, id ornare diam. Praesent eu varius
-                justo. Duis dapibus elit scelerisque iaculis pellentesque.
-                Vestibulum dignissim tellus et luctus viverra. Etiam non luctus
-                libero. Suspendisse enim purus, ultricies vel efficitur auctor,
-                rhoncus vel nibh. Nulla vel nulla ut quam aliquam pharetra id at
-                odio. Sed mi tortor, maximus quis tempus quis, dictum nec erat.
-                Duis et feugiat mauris, quis tristique mauris. Proin eu turpis
-                vitae justo euismod ultricies non vel massa. Cras eros ligula,
-                scelerisque sit amet venenatis vitae, faucibus eu orci. In
-                euismod at ante vitae lacinia. Phasellus semper malesuada lectus
-                non volutpat. Donec sed augue justo. Morbi id lobortis sapien.
-                In sodales ultricies erat, sit amet cursus ex. Phasellus
-                convallis nisi ac hendrerit pellentesque. Etiam tempus odio et
-                eleifend efficitur. Nullam vitae dolor ligula. Nulla ac odio sed
-                massa pellentesque hendrerit quis sagittis metus. In imperdiet
-                ut sapien ac aliquet. Maecenas porttitor et tortor vel luctus.
-                Pellentesque nec enim nibh. Vestibulum eu sapien felis. Nullam
-                vulputate, magna tempus placerat rutrum, dui ante consectetur
-                ex, sed porttitor orci nulla nec elit. Sed consequat felis nec
-                justo imperdiet ultrices. Cras bibendum risus dolor, id euismod
-                sapien accumsan sit amet. Suspendisse enim lorem, gravida sed
-                tortor nec, imperdiet consequat ante. Nullam bibendum tempor
-                venenatis. Vivamus vitae diam ultrices, sodales erat eu,
-                vestibulum neque. Etiam iaculis ullamcorper libero ut maximus.
-                Etiam tempor mi a dolor ornare finibus. Duis pulvinar neque
-                diam, id commodo quam sagittis ac. Nunc eget odio vel dolor
-                venenatis bibendum. Donec condimentum purus nec aliquam finibus.
-                Quisque at enim vulputate, eleifend nisl eget, pulvinar est.
-                Aenean vulputate fringilla ex, sed dictum quam tempor in. Mauris
-                faucibus scelerisque dignissim. In id tincidunt dui. Cras augue
-                mi, facilisis et elit id, porttitor egestas erat. Nulla orci
-                lorem, cursus a tempor eu, tristique at elit. Donec tincidunt ac
-                nibh eu ultricies. Ut tincidunt interdum nunc, ut tempor lacus
-                elementum a. Nulla gravida et quam ornare lacinia. Pellentesque
-                auctor erat in fermentum consequat. Maecenas scelerisque mauris
-                a mi lobortis, id finibus nibh molestie. Phasellus vehicula urna
-                eget aliquam tincidunt. Donec vitae venenatis erat. Donec dictum
-                leo erat, ut eleifend elit maximus sit amet. Vivamus in nibh
-                malesuada, pharetra odio non, sodales ipsum. Nullam erat mi,
-                sollicitudin sed sagittis pellentesque, porttitor et libero.
-                Suspendisse sit amet elit eget nulla volutpat ornare.
-                Suspendisse potenti. Nulla rutrum dui a justo tincidunt
-                lobortis. Nulla pulvinar sodales mollis. Vestibulum venenatis
-                justo sed quam venenatis, in placerat augue efficitur. Nulla
-                semper arcu ac purus posuere tincidunt. Nunc porttitor
-                ullamcorper sollicitudin. Sed ipsum felis, viverra id lectus ac,
-                aliquet placerat neque. Nam diam nulla, vehicula eu fringilla a,
-                dictum eu tortor. Ut in eleifend elit. Etiam consectetur sem et
-                metus mattis, nec placerat nisl dictum. Ut id ligula feugiat,
-                consectetur eros non, cursus ligula. Aliquam vulputate leo quis
-                tincidunt egestas. Phasellus id gravida dui. Nulla vehicula
-                dolor justo, tempus consectetur justo posuere vitae. Mauris
-                rhoncus facilisis orci eu laoreet. Mauris nec odio vel mauris
-                eleifend maximus. Fusce quis convallis orci, eu malesuada nisi.
-                Ut imperdiet neque vitae tempus facilisis. Mauris in cursus
-                justo. Sed faucibus tincidunt aliquet. Suspendisse ac augue vel
-                felis tristique rutrum.{" "}
+            <div className="grid grid-cols-1 gap-1 content-center md:grid-cols-1 mt-3">
+              <div className="mb-2">
+                <label
+                  htmlFor="fieldName"
+                  className="block text-gray-700 text-sm font-bold mb-2"
+                >
+                  Url Imagen:
+                </label>
+                <input
+                  disabled={isDisabled}
+                  id="urlImagen"
+                  name="urlImagen"
+                  type="text"
+                  onChange={formik.handleChange}
+                  value={formik.values.urlImagen}
+                  className={`shadow w-full appearance-none border ${
+                    formik.errors.urlImagen ? "border-red-500" : ""
+                  } rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline`}
+                />
+                {formik.errors.urlImagen ? (
+                  <p className="text-red-500 text-xs italic">
+                    {formik.errors.urlImagen}
+                  </p>
+                ) : null}
+              </div>
+              <div className="mb-2">
+                <label
+                  htmlFor="fieldName"
+                  className="block text-gray-700 text-sm font-bold mb-2"
+                >
+                  Url Destino:
+                </label>
+                <input
+                  id="urlDestino"
+                  disabled={isDisabled}
+                  name="urlDestino"
+                  type="text"
+                  onChange={formik.handleChange}
+                  value={formik.values.urlDestino}
+                  className={`shadow w-full appearance-none border ${
+                    formik.errors.urlDestino ? "border-red-500" : ""
+                  } rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline`}
+                />
+                {formik.errors.urlDestino ? (
+                  <p className="text-red-500 text-xs italic">
+                    {formik.errors.urlDestino}
+                  </p>
+                ) : null}
+              </div>
+              <div className="mb-2">
+                <label
+                  htmlFor="fieldName"
+                  className="block text-gray-700 text-sm font-bold mb-2"
+                >
+                  Fecha Inicio:
+                </label>
+                <input
+                  id="fechaInicio"
+                  disabled={isDisabled}
+                  name="fechaInicio"
+                  type="datetime-local"
+                  onChange={formik.handleChange}
+                  value={formik.values.fechaInicio}
+                  className={`shadow w-full appearance-none border ${
+                    formik.errors.fechaInicio ? "border-red-500" : ""
+                  } rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline`}
+                />
+                {formik.errors.fechaInicio ? (
+                  <p className="text-red-500 text-xs italic">
+                    {formik.errors.fechaInicio}
+                  </p>
+                ) : null}
+              </div>
+              <div className="mb-2">
+                <label
+                  htmlFor="fieldName"
+                  className="block text-gray-700 text-sm font-bold mb-2"
+                >
+                  Fecha Fin:
+                </label>
+                <input
+                  id="fechaFin"
+                  name="fechaFin"
+                  disabled={isDisabled}
+                  type="datetime-local"
+                  onChange={formik.handleChange}
+                  value={formik.values.fechaFin}
+                  className={`shadow w-full appearance-none border ${
+                    formik.errors.fechaFin ? "border-red-500" : ""
+                  } rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline`}
+                />
+                {formik.errors.fechaFin ? (
+                  <p className="text-red-500 text-xs italic">
+                    {formik.errors.fechaFin}
+                  </p>
+                ) : null}
               </div>
             </div>
           </div>
-
           <button
             type="submit"
+            disabled={isDisabled}
             className={`px-4 py-2 text-white ${
               crud.type == "create" ? "bg-green-500" : null
             } ${crud.type == "edit" ? "bg-blue-500" : null} ${
