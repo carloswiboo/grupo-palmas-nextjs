@@ -1,15 +1,17 @@
 "use client";
-import { getBannersPrivateApi } from "@/lib/api/apiBanners";
 import { useState, useEffect } from "react";
 import { DateTime } from "luxon";
 import Head from "next/head";
 import LoadingDataComponent from "@/app/components/LoadingDataComponent/LoadingDataComponent";
 import TitleScreenPageComponent from "@/app/components/TitleScreenPageComponent/TitleScreenPageComponent";
 import CrudPromocionesComponent from "@/app/components/CrudPromocionesComponent/CrudPromocionesComponent";
+import { getAniosPrivateApi } from "../../../lib/api/apiAnios";
+import CrudAniosComponent from "@/app/components/CrudAniosComponent/CrudAniosComponent";
 
-let nombrePlural = "Promociones";
-let nombreSingular = "Promoción";
-let descripcionPagina = "Se enlistan las promociones de las páginas de Palmas";
+let nombrePlural = "Años";
+let nombreSingular = "Año";
+let descripcionPagina =
+  "Se enlistan los años de los vehículos de las páginas de Palmas";
 
 export default function Page({ params, searchParams }) {
   const [finalData, setFinalData] = useState([]);
@@ -17,7 +19,7 @@ export default function Page({ params, searchParams }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getBannersPrivateApi().then((resultado) => {
+    getAniosPrivateApi().then((resultado) => {
       if (resultado.status == 200) {
         setFinalData(resultado.data);
         setLoading(false);
@@ -54,23 +56,21 @@ export default function Page({ params, searchParams }) {
               key={item.idpromociones}
               className="bg-white rounded-xl shadow-md overflow-hidden m-3"
             >
-              <img src={item.urlImagen} alt={item.urlImagen} />
-              <h1>{item.title}</h1>
-
               <div className=" p-3">
                 <ul>
                   <li>
-                    <strong>Url:</strong> {item.urlDestino}
+                    <strong>Año:</strong> {item.nombre}
                   </li>
+
                   <li>
-                    <strong>Inicia:</strong>{" "}
-                    {DateTime.fromISO(item.fechaInicio)
+                    <strong>Creación:</strong>{" "}
+                    {DateTime.fromISO(item.created_at)
                       .setZone("America/Mexico_City")
                       .toFormat("f")}
                   </li>
                   <li>
-                    <strong>Termina:</strong>{" "}
-                    {DateTime.fromISO(item.fechaFin)
+                    <strong>Actualización:</strong>{" "}
+                    {DateTime.fromISO(item.updated_at)
                       .setZone("America/Mexico_City")
                       .toFormat("f")}
                   </li>
@@ -100,7 +100,7 @@ export default function Page({ params, searchParams }) {
       {crud.type !== null ? (
         <>
           {" "}
-          <CrudPromocionesComponent
+          <CrudAniosComponent
             crud={crud}
             setCrud={setCrud}
             titulo={nombreSingular}
