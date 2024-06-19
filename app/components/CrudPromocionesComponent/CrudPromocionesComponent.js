@@ -82,13 +82,15 @@ const CrudPromocionesComponent = ({ crud, setCrud, titulo }) => {
       }
       if (crud.type == "delete") {
         values.idpromociones = crud.data.idpromociones;
-        deleteBannersPrivateApi(values).then((resultado) => {
+
+        debugger;
+        deleteBannersPrivateApi(crud.data.idpromociones).then((resultado) => {
           if (resultado.status == 200) {
-            toast.success("Promoción creada correctamente");
+            toast.success("Promoción eliminada correctamente");
             setCrud({ type: null, data: null });
           } else {
             setIsDisabled(false);
-            toast.error("Ha ocurrido un error al publicar la promoción");
+            toast.error("Ha ocurrido un error al eliminar la promoción");
           }
         });
       }
@@ -139,7 +141,7 @@ const CrudPromocionesComponent = ({ crud, setCrud, titulo }) => {
                   Url Imagen:
                 </label>
                 <input
-                  disabled={isDisabled}
+                  disabled={crud.type == "delete" ? true : isDisabled}
                   id="urlImagen"
                   name="urlImagen"
                   type="text"
@@ -164,7 +166,7 @@ const CrudPromocionesComponent = ({ crud, setCrud, titulo }) => {
                 </label>
                 <input
                   id="urlDestino"
-                  disabled={isDisabled}
+                  disabled={crud.type == "delete" ? true : isDisabled}
                   name="urlDestino"
                   type="text"
                   onChange={formik.handleChange}
@@ -188,7 +190,7 @@ const CrudPromocionesComponent = ({ crud, setCrud, titulo }) => {
                 </label>
                 <input
                   id="fechaInicio"
-                  disabled={isDisabled}
+                  disabled={crud.type == "delete" ? true : isDisabled}
                   name="fechaInicio"
                   type="datetime-local"
                   onChange={formik.handleChange}
@@ -213,7 +215,7 @@ const CrudPromocionesComponent = ({ crud, setCrud, titulo }) => {
                 <input
                   id="fechaFin"
                   name="fechaFin"
-                  disabled={isDisabled}
+                  disabled={crud.type == "delete" ? true : isDisabled}
                   type="datetime-local"
                   onChange={formik.handleChange}
                   value={formik.values.fechaFin}

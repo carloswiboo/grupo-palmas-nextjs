@@ -51,7 +51,7 @@ export default function Page({ params, searchParams }) {
         {finalData.map((item) => {
           return (
             <div
-              key={item.id}
+              key={item.idpromociones}
               className="bg-white rounded-xl shadow-md overflow-hidden m-3"
             >
               <img src={item.urlImagen} alt={item.urlImagen} />
@@ -68,7 +68,7 @@ export default function Page({ params, searchParams }) {
                       .setZone("America/Mexico_City")
                       .toFormat("f")}
                   </li>
-                  <li>  
+                  <li>
                     <strong>Termina:</strong>{" "}
                     {DateTime.fromISO(item.fechaFin)
                       .setZone("America/Mexico_City")
