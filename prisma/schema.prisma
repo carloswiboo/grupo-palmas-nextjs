@@ -148,6 +148,7 @@ model agencias {
   created_at      DateTime?      @default(now()) @db.DateTime(0)
   updated_at      DateTime?      @default(now()) @db.DateTime(0)
   idtiposagencias Int?
+  seekop_id       String?        @db.VarChar(45)
   tiposagencias   tiposagencias? @relation(fields: [idtiposagencias], references: [idtiposagencias], onDelete: NoAction, onUpdate: NoAction, map: "FK_agencias_tipos_agencias")
   leads           leads[]
 
@@ -183,6 +184,7 @@ model tiposrazoncontacto {
   status               Int?
   created_at           DateTime? @default(now()) @db.DateTime(0)
   updated_at           DateTime? @default(now()) @db.DateTime(0)
+  originType           String?   @db.VarChar(45)
   leads                leads[]
 }
 
@@ -220,4 +222,14 @@ model funciones_menu {
   menu             menu?     @relation(fields: [idmenu], references: [idmenu], onDelete: NoAction, onUpdate: NoAction, map: "fk_funciones_menu_menu")
 
   @@index([idmenu], map: "fk_funciones_menu_menu_idx")
+}
+
+model sicop {
+  idsicop       Int       @id @default(autoincrement())
+  json          Json?
+  created_at    DateTime? @db.DateTime(0)
+  updated_at    DateTime? @db.DateTime(0)
+  status        Int?
+  responsesicop Json?
+  responsemail  Json?
 }
