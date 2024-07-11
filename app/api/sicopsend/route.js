@@ -142,7 +142,7 @@ export async function POST(request) {
         updated_at: new Date().toISOString(),
         status: 1,
        // responsesicop: responseFinalSicop,
-        reponsemail: resultadoCorreoElectronico,
+        responsemail: resultadoCorreoElectronico,
       },
     });
 
