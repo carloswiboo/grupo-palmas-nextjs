@@ -8,6 +8,7 @@ import { mailTemplate } from "@/handlebars/mailTemplate";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { DateTime } from "luxon";
+import { NextResponse } from "next/server";
 
 //Creando el post de la aplicación
 export async function POST(request) {
@@ -122,7 +123,7 @@ export async function POST(request) {
 
   debugger;
 
- /* const responseFinalSicop = await axios({
+  /* const responseFinalSicop = await axios({
     method: "post",
     url: "https://www.sicopweb.com/interface/adf/add/prospect.xml",
     data: data,
@@ -141,7 +142,7 @@ export async function POST(request) {
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
         status: 1,
-       // responsesicop: responseFinalSicop,
+        // responsesicop: responseFinalSicop,
         responsemail: resultadoCorreoElectronico,
       },
     });
