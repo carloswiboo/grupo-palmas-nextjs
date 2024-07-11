@@ -122,7 +122,7 @@ export async function POST(request) {
 
   debugger;
 
-  const responseFinalSicop = await axios({
+ /* const responseFinalSicop = await axios({
     method: "post",
     url: "https://www.sicopweb.com/interface/adf/add/prospect.xml",
     data: data,
@@ -133,7 +133,7 @@ export async function POST(request) {
   });
 
   resultado.responsesicop = responseFinalSicop;
-
+*/
   try {
     const resultadoConsulta = await prisma.sicop.create({
       data: {
@@ -141,7 +141,7 @@ export async function POST(request) {
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
         status: 1,
-        responsesicop: responseFinalSicop,
+       // responsesicop: responseFinalSicop,
         reponsemail: resultadoCorreoElectronico,
       },
     });
