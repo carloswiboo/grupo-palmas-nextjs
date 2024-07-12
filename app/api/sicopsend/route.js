@@ -83,8 +83,6 @@ export async function POST(request) {
     html: html,
   });
 
-  resultado.responsemail = resultadoCorreoElectronico;
-
   //Teniendo ya la agencia necesito correr el envío de correo electrónico.
 
   const dateContact = DateTime.now()
