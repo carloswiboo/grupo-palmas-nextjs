@@ -79,7 +79,7 @@ export async function POST(request) {
   let resultadoCorreoElectronico = await transporter.sendMail({
     from: "Notificaciones Grupo Palmas Web <carlos@wiboo.com.mx>",
     to: envioCorreos,
-    subject: agencia.nombre + " - " + tiposRazonContacto.nombre,
+    subject: agencia.nombre + " - Solicitud de " + tiposRazonContacto.nombre,
     html: html,
   });
 
