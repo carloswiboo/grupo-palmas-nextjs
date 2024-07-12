@@ -7,7 +7,7 @@
   ],
   "functions": {
     "app/api/**/*": {
-      "maxDuration": 90 
+      "maxDuration": 120
     }
   }
 }
