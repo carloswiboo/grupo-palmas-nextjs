@@ -58,7 +58,7 @@ export async function POST(request) {
   const template = handlebars.compile(mailTemplate());
 
   const html = template({
-    title: agencia.nombre + " - " + tiposRazonContacto.nombre,
+    title: agencia.nombre + " - Solicitud de " + tiposRazonContacto.nombre,
     content: `¡Hola! ${agencia.nombre} <br />
     
     Te informamos que se ha recibido una solicitud de ${tiposRazonContacto.nombre} con los datos siguientes: <br />
