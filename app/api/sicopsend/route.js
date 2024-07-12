@@ -43,9 +43,9 @@ export async function POST(request) {
     },
   });
 
-  // const envioCorreos = agencia.reenvioCorreos;
+   const envioCorreos = agencia.reenvioCorreos;
 
-  const envioCorreos = "carlosestrada122@gmail.com";
+ // const envioCorreos = "carlosestrada122@gmail.com";
 
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
