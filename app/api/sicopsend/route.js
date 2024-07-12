@@ -46,8 +46,6 @@ export async function POST(request) {
 
   const envioCorreos = "carlosestrada122@gmail.com";
 
-  debugger;
-
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port: process.env.SMTP_PORT,
@@ -121,8 +119,6 @@ export async function POST(request) {
     </provider>
   </adf>`;
 
-  debugger;
-
   const responseFinalSicop = await axios({
     method: "post",
     url: "https://www.sicopweb.com/interface/adf/add/prospect.xml",
@@ -133,9 +129,8 @@ export async function POST(request) {
     },
   });
 
-  debugger;
+  console.log(responseFinalSicop);
 
-  resultado.responsesicop = responseFinalSicop.toString();
   try {
     const resultadoConsulta = await prisma.sicop.create({
       data: {
@@ -143,7 +138,7 @@ export async function POST(request) {
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
         status: 1,
-        responsesicop: responseFinalSicop,
+        responsesicop: responseFinalSicop.data,
         responsemail: resultadoCorreoElectronico,
       },
     });
