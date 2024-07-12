@@ -4,5 +4,10 @@
       "path": "/api/sendmails",
       "schedule": "* * * * *"
     }
-  ]
+  ],
+  "functions": {
+    "app/api/**/*": {
+      "maxDuration": 90 
+    }
+  }
 }
