@@ -29,17 +29,6 @@ export async function POST(request) {
   resultado.updated_at = new Date().toISOString();
   //Ya teniendo los primeros datos, necesito llamar la agencia que selecciono el usuario para traer los emails
 
-  process.nextTick(() => {
-    operacionDeEnvioCorreo(resultado);
-  });
-
-  return NextResponse.json(
-    { message: "Procesando Solicitud" },
-    { status: 202 }
-  );
-}
-
-async function operacionDeEnvioCorreo(resultado) {
   const agencia = await prisma.agencias.findUnique({
     where: {
       idagencias: parseInt(resultado.idagencia),
@@ -154,8 +143,10 @@ async function operacionDeEnvioCorreo(resultado) {
         responsemail: resultadoCorreoElectronico,
       },
     });
-    console.log(resultadoConsulta);
+
+    return NextResponse.json(resultadoConsulta, { status: 200 });
   } catch (error) {
-    console.error(error);
+    console.log(error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
