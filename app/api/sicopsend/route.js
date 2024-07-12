@@ -43,9 +43,9 @@ export async function POST(request) {
     },
   });
 
-   const envioCorreos = agencia.reenvioCorreos;
+  const envioCorreos = agencia.reenvioCorreos;
 
- // const envioCorreos = "carlosestrada122@gmail.com";
+  //const envioCorreos = "carlosestrada122@gmail.com";
 
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
@@ -120,6 +120,8 @@ export async function POST(request) {
     </provider>
   </adf>`;
 
+  // const responseFinalSicop = { data: "Aquí ponemos la info" };
+
   const responseFinalSicop = await axios({
     method: "post",
     url: "https://www.sicopweb.com/interface/adf/add/prospect.xml",
@@ -144,7 +146,26 @@ export async function POST(request) {
       },
     });
 
-    return NextResponse.json(resultadoConsulta, { status: 200 });
+    const resultadoAgregarLead = await prisma.leads.create({
+      data: {
+        idmodelos: null,
+        idtiposrazoncontacto: parseInt(resultado.tiposrazoncontacto),
+        nombres: resultado.nombreCliente,
+        apellidos: null,
+        correoelectronico: resultado.emailCliente,
+        telefono: resultado.telefonoCliente,
+        fechaPreferenteContacto: new Date(
+          resultado.fechaContacto
+        ).toISOString(),
+        idagencias: parseInt(resultado.idagencia),
+        notas: "Sin Notas",
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        status: 1,
+      },
+    });
+
+    return NextResponse.json(true, { status: 200 });
   } catch (error) {
     console.log(error);
     return NextResponse.json({ error: error.message }, { status: 500 });
