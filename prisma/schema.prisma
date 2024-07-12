@@ -230,6 +230,6 @@ model sicop {
   created_at    DateTime? @db.DateTime(0)
   updated_at    DateTime? @db.DateTime(0)
   status        Int?
-  responsesicop Json?
+  responsesicop String?   @db.LongText
   responsemail  Json?
 }

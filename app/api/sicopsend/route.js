@@ -42,7 +42,9 @@ export async function POST(request) {
     },
   });
 
-  const envioCorreos = agencia.reenvioCorreos;
+  // const envioCorreos = agencia.reenvioCorreos;
+
+  const envioCorreos = "carlosestrada122@gmail.com";
 
   debugger;
 
@@ -131,7 +133,9 @@ export async function POST(request) {
     },
   });
 
-  resultado.responsesicop = responseFinalSicop;
+  debugger;
+
+  resultado.responsesicop = responseFinalSicop.toString();
   try {
     const resultadoConsulta = await prisma.sicop.create({
       data: {
@@ -146,6 +150,7 @@ export async function POST(request) {
 
     return NextResponse.json(resultadoConsulta, { status: 200 });
   } catch (error) {
+    console.log(error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
