@@ -67,6 +67,7 @@ export async function POST(request) {
     <li>Nombre: ${resultado.nombreCliente}</li>
     <li>Teléfono: ${resultado.telefonoCliente}</li>
     <li>Correo: ${resultado.emailCliente}</li>
+    <li>Modelo: ${resultado.model}</li>
     <li>Fecha de contacto: ${resultado.fechaContacto}</li>
     </ul>
 
@@ -85,8 +86,6 @@ export async function POST(request) {
   resultado.responsemail = resultadoCorreoElectronico;
 
   //Teniendo ya la agencia necesito correr el envío de correo electrónico.
-
-  debugger;
 
   const dateContact = DateTime.now()
     .setZone("America/Mexico_City")
