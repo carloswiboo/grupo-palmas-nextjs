@@ -71,7 +71,7 @@ export async function POST(request) {
     <li>Correo: ${resultado.emailCliente}</li>
     <li>Modelo: ${resultado.model}</li>
     <li>Fecha de contacto: ${resultado.fechaContacto}</li>
-    <li>URl Solicitud: ${resultado.urlSolicitud}</li>
+    <li>URL Solicitud: ${resultado.urlSolicitud}</li>
     </ul>
 
     `,
