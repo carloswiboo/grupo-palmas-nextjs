@@ -232,4 +232,5 @@ model sicop {
   status        Int?
   responsesicop String?   @db.LongText
   responsemail  Json?
+  urlSolicitud  String?   @db.LongText
 }

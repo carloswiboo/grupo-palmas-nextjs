@@ -71,6 +71,7 @@ export async function POST(request) {
     <li>Correo: ${resultado.emailCliente}</li>
     <li>Modelo: ${resultado.model}</li>
     <li>Fecha de contacto: ${resultado.fechaContacto}</li>
+    <li>Fecha de contacto: ${resultado.fechaContacto}</li>
     </ul>
 
     `,
@@ -143,6 +144,7 @@ export async function POST(request) {
         status: 1,
         responsesicop: responseFinalSicop.data,
         responsemail: resultadoCorreoElectronico,
+        urlSolicitud: resultado.urlSolicitud,
       },
     });
 
