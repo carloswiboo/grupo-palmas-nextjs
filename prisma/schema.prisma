@@ -63,9 +63,12 @@ model modelos {
   pdf             String?           @db.VarChar(45)
   status          Int?
   orden           Int?
+  created_at      DateTime?         @default(now()) @db.DateTime(0)
+  updated_at      DateTime?         @default(now()) @db.DateTime(0)
   colores_modelos colores_modelos[]
   leads           leads[]
   anios           anios?            @relation(fields: [idanios], references: [idanios], onDelete: NoAction, onUpdate: NoAction, map: "FK_MODELO_ANIOS")
+  starservice     starservice[]
   versiones       versiones[]
 
   @@index([idanios], map: "FK_MODELO_ANIOS_idx")
@@ -233,4 +236,18 @@ model sicop {
   responsesicop String?   @db.LongText
   responsemail  Json?
   urlSolicitud  String?   @db.LongText
+}
+
+model starservice {
+  idstarservice Int       @id @default(autoincrement())
+  nombre        String?   @db.VarChar(200)
+  descripcion   String?   @db.LongText
+  iframe        String?   @db.LongText
+  status        Int?
+  created_at    DateTime? @default(now()) @db.DateTime(0)
+  updated_at    DateTime? @default(now()) @db.DateTime(0)
+  idmodelos     Int?
+  modelos       modelos?  @relation(fields: [idmodelos], references: [idmodelos], onDelete: NoAction, onUpdate: NoAction, map: "star_service_modelos")
+
+  @@index([idmodelos], map: "star_service_modelos_idx")
 }

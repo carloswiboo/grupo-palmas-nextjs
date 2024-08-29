@@ -27,6 +27,11 @@ export async function GET(request, { params }) {
             status: 1,
           },
         },
+        starservice: {
+          where: {
+            status: 1,
+          },
+        },
         colores_modelos: {
           where: {
             status: 1,

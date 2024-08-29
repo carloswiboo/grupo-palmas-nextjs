@@ -5,7 +5,6 @@ import { NextResponse } from "next/server";
 import { DateTime } from "luxon";
 import nodemailer from "nodemailer";
 
-
 /**
  * @swagger
  * /api/modelos/:
@@ -25,6 +24,11 @@ export async function GET(request) {
       },
       include: {
         anios: {
+          where: {
+            status: 1,
+          },
+        },
+        starservice: {
           where: {
             status: 1,
           },
