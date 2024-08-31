@@ -8,6 +8,7 @@ import CrudPromocionesComponent from "@/app/components/CrudPromocionesComponent/
 import { getAniosPrivateApi } from "../../../lib/api/apiAnios";
 import CrudAniosComponent from "@/app/components/CrudAniosComponent/CrudAniosComponent";
 import { getModelosPrivateApi } from "@/lib/api/apiModelos";
+import CrudModelosComponent from "@/app/components/CrudModelosComponent/CrudModelosComponent";
 
 let nombrePlural = "Modelos";
 let nombreSingular = "Modelo";
@@ -50,16 +51,20 @@ export default function Page({ params, searchParams }) {
         setCrud={setCrud}
         mostrarAgregar={true}
       />
-      <div className="grid grid-cols-1 md:grid-cols-1 gap-1">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-1">
         {finalData.map((item) => {
           return (
             <div
               key={item.idpromociones}
               className="bg-white rounded-xl shadow-md overflow-hidden m-3"
             >
-              <div className=" p-3">
+              <div className="p-3">
                 <img
-                  style={{ width: "50%", margin: "0 auto" }}
+                  style={{
+                    width: "100%",
+                    margin: "0 auto",
+                    marginBottom: "1rem",
+                  }}
                   src={item.imagen}
                   alt={item.nombre}
                 />
@@ -146,12 +151,11 @@ export default function Page({ params, searchParams }) {
 
       {crud.type !== null ? (
         <>
-          {" "}
-          <CrudAniosComponent
+          <CrudModelosComponent
             crud={crud}
             setCrud={setCrud}
             titulo={nombreSingular}
-          />{" "}
+          />
         </>
       ) : null}
     </>
