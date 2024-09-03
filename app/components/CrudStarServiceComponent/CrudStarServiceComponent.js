@@ -22,19 +22,21 @@ import {
   patchModelosPrivateApi,
   postModelosPrivateApi,
 } from "@/lib/api/apiModelos";
+import {
+  deleteStarServicePrivateApi,
+  postStarServicePrivateApi,
+} from "@/lib/api/apiStarService";
 
 const validationSchema = yup.object({
   nombre: yup.string("Ingresa").required("Requerido"),
-  idanios: yup.string("Ingresa").required("Requerido"),
-  frase: yup.string("Ingresa").required("Requerido"),
-  imagen: yup.string("Ingresa").required("Requerido"),
-  url: yup.string("Ingresa").required("Requerido"),
-  pdf: yup.string("Ingresa").required("Requerido"),
+  descripcion: yup.string("Ingresa").required("Requerido"),
+  iframe: yup.string("Ingresa").required("Requerido"),
   status: yup.string("Ingresa").required("Requerido"),
+  idmodelos: yup.string("Ingresa").required("Requerido"),
   orden: yup.string("Ingresa").required("Requerido"),
 });
 
-const CrudModelosComponent = ({ crud, setCrud, titulo }) => {
+const CrudStarServiceComponent = ({ crud, setCrud, titulo }) => {
   const [isDisabled, setIsDisabled] = React.useState(false);
 
   const [finalData, setFinalData] = React.useState([]);
@@ -64,26 +66,24 @@ const CrudModelosComponent = ({ crud, setCrud, titulo }) => {
 
   const formik = useFormik({
     initialValues: {
-      nombre: crud.type !== "create" ? crud.data.nombre : "",
-      idanios: crud.type !== "create" ? crud.data.idanios : "",
-      frase: crud.type !== "create" ? crud.data.frase : "",
-      imagen: crud.type !== "create" ? crud.data.imagen : "",
-      url: crud.type !== "create" ? crud.data.url : "",
-      orden: crud.type !== "create" ? crud.data.orden : "",
-      pdf: crud.type !== "create" ? crud.data.pdf : "",
-      status: crud.type !== "create" ? crud.data.status : "1",
+      nombre: "",
+      descripcion: "",
+      iframe: "",
+      status: "1",
+      idmodelos: crud.data.idmodelos,
+      orden: "",
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
       setIsDisabled(true);
-      if (crud.type == "create") {
-        postModelosPrivateApi(values).then((resultado) => {
+      if (crud.type == "starService") {
+        postStarServicePrivateApi(values).then((resultado) => {
           if (resultado.status == 200) {
-            toast.success("Modelo creado correctamente");
+            toast.success("Star Service creado correctamente");
             setCrud({ type: null, data: null });
           } else {
             setIsDisabled(false);
-            toast.error("Ha ocurrido un error al agregar el modelo");
+            toast.error("Ha ocurrido un error al agregar el Star Service");
           }
         });
       }
@@ -156,40 +156,6 @@ const CrudModelosComponent = ({ crud, setCrud, titulo }) => {
                   htmlFor="fieldName"
                   className="block text-gray-700 text-sm font-bold mb-2"
                 >
-                  Año:
-                </label>
-                <select
-                  disabled={crud.type == "delete" ? true : isDisabled}
-                  id="idanios"
-                  name="idanios"
-                  onChange={formik.handleChange}
-                  value={formik.values.idanios}
-                  className={`shadow w-full appearance-none border ${
-                    formik.errors.idanios ? "border-red-500" : ""
-                  } rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline`}
-                >
-                  <option value="" label="Seleccionar Año" />
-                  {finalData.map((item) => {
-                    return (
-                      <option
-                        key={item.idanios}
-                        value={item.idanios}
-                        label={item.nombre}
-                      />
-                    );
-                  })}
-                </select>
-                {formik.errors.idanios ? (
-                  <p className="text-red-500 text-xs italic">
-                    {formik.errors.idanios}
-                  </p>
-                ) : null}
-              </div>
-              <div className="mb-2">
-                <label
-                  htmlFor="fieldName"
-                  className="block text-gray-700 text-sm font-bold mb-2"
-                >
                   Nombre:
                 </label>
                 <input
@@ -215,22 +181,22 @@ const CrudModelosComponent = ({ crud, setCrud, titulo }) => {
                   htmlFor="fieldName"
                   className="block text-gray-700 text-sm font-bold mb-2"
                 >
-                  Frase:
+                  Descripción:
                 </label>
-                <input
+                <textarea
                   disabled={crud.type == "delete" ? true : isDisabled}
-                  id="frase"
-                  name="frase"
+                  id="descripcion"
+                  name="descripcion"
                   type="text"
                   onChange={formik.handleChange}
-                  value={formik.values.frase}
+                  value={formik.values.descripcion}
                   className={`shadow w-full appearance-none border ${
-                    formik.errors.frase ? "border-red-500" : ""
+                    formik.errors.descripcion ? "border-red-500" : ""
                   } rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline`}
                 />
-                {formik.errors.frase ? (
+                {formik.errors.descripcion ? (
                   <p className="text-red-500 text-xs italic">
-                    {formik.errors.frase}
+                    {formik.errors.descripcion}
                   </p>
                 ) : null}
               </div>
@@ -239,73 +205,26 @@ const CrudModelosComponent = ({ crud, setCrud, titulo }) => {
                   htmlFor="fieldName"
                   className="block text-gray-700 text-sm font-bold mb-2"
                 >
-                  URL Imagen:
+                  Iframe o URL
                 </label>
-                <input
+                <textarea
                   disabled={crud.type == "delete" ? true : isDisabled}
-                  id="imagen"
-                  name="imagen"
+                  id="iframe"
+                  name="iframe"
                   type="text"
                   onChange={formik.handleChange}
-                  value={formik.values.imagen}
+                  value={formik.values.iframe}
                   className={`shadow w-full appearance-none border ${
-                    formik.errors.imagen ? "border-red-500" : ""
+                    formik.errors.iframe ? "border-red-500" : ""
                   } rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline`}
                 />
-                {formik.errors.imagen ? (
+                {formik.errors.iframe ? (
                   <p className="text-red-500 text-xs italic">
-                    {formik.errors.imagen}
+                    {formik.errors.iframe}
                   </p>
                 ) : null}
               </div>
-              <div className="mb-2">
-                <label
-                  htmlFor="fieldName"
-                  className="block text-gray-700 text-sm font-bold mb-2"
-                >
-                  URL Vehículo:
-                </label>
-                <input
-                  disabled={crud.type == "delete" ? true : isDisabled}
-                  id="url"
-                  name="url"
-                  type="text"
-                  onChange={formik.handleChange}
-                  value={formik.values.url}
-                  className={`shadow w-full appearance-none border ${
-                    formik.errors.url ? "border-red-500" : ""
-                  } rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline`}
-                />
-                {formik.errors.url ? (
-                  <p className="text-red-500 text-xs italic">
-                    {formik.errors.url}
-                  </p>
-                ) : null}
-              </div>
-              <div className="mb-2">
-                <label
-                  htmlFor="fieldName"
-                  className="block text-gray-700 text-sm font-bold mb-2"
-                >
-                  PDF URL:
-                </label>
-                <input
-                  disabled={crud.type == "delete" ? true : isDisabled}
-                  id="pdf"
-                  name="pdf"
-                  type="text"
-                  onChange={formik.handleChange}
-                  value={formik.values.pdf}
-                  className={`shadow w-full appearance-none border ${
-                    formik.errors.pdf ? "border-red-500" : ""
-                  } rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline`}
-                />
-                {formik.errors.pdf ? (
-                  <p className="text-red-500 text-xs italic">
-                    {formik.errors.pdf}
-                  </p>
-                ) : null}
-              </div>
+
               <div className="mb-2">
                 <label
                   htmlFor="fieldName"
@@ -331,17 +250,62 @@ const CrudModelosComponent = ({ crud, setCrud, titulo }) => {
                 ) : null}
               </div>
             </div>
+
+            <div className="grid grid-cols-1 gap-1 content-center md:grid-cols-1 mt-3">
+              {crud.data.starservice.map((item, index) => {
+                debugger;
+                return (
+                  <div
+                    key={index}
+                    className="bg-white rounded-xl shadow-md overflow-hidden m-3"
+                  >
+                    <div className="p-3">
+                      <h2 className="text-xl font-bold mb-2">{item.nombre}</h2>
+                      <p className="text-gray-700 text-base">
+                        {item.descripcion}
+                      </p>
+                      <p className="text-gray-700 text-base">{item.iframe}</p>
+                      <p className="text-gray-700 text-base">{item.orden}</p>
+                      <button
+                        onClick={() => {
+                          debugger;
+                          setIsDisabled(true);
+                          deleteStarServicePrivateApi(item.idstarservice).then(
+                            (resultado) => {
+                              if (resultado.status == 200) {
+                                toast.success(
+                                  "Star Service eliminado correctamente"
+                                );
+                                setCrud({ type: null, data: null });
+                              } else {
+                                setIsDisabled(false);
+                                toast.error(
+                                  "Ha ocurrido un error al eliminar el Star Service"
+                                );
+                              }
+                            }
+                          );
+                        }}
+                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded mt-2"
+                      >
+                        Eliminar
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
           <button
             type="submit"
             disabled={isDisabled}
             className={`px-4 py-2 text-white ${
-              crud.type == "create" ? "bg-green-500" : null
+              crud.type == "starService" ? "bg-green-500" : null
             } ${crud.type == "edit" ? "bg-blue-500" : null} ${
               crud.type == "delete" ? "bg-red-500" : null
             } rounded self-end w-full`}
           >
-            {crud.type == "create" ? "Crear" : null}
+            {crud.type == "starService" ? "Crear" : null}
             {crud.type == "edit" ? "Editar" : null}
             {crud.type == "delete" ? "Eliminar" : null} {titulo}
           </button>
@@ -351,4 +315,4 @@ const CrudModelosComponent = ({ crud, setCrud, titulo }) => {
   );
 };
 
-export default CrudModelosComponent;
+export default CrudStarServiceComponent;

@@ -133,10 +133,10 @@ export async function POST(request) {
 
     resultado.created_at = new Date().toISOString();
     resultado.updated_at = new Date().toISOString();
-    resultado.idanios = parseInt(resultado.idanios);
+    resultado.idmodelos = parseInt(resultado.idmodelos);
     resultado.status = parseInt(resultado.status);
 
-    const resultadoConsulta = await prisma.modelos.create({
+    const resultadoConsulta = await prisma.starservice.create({
       data: resultado,
     });
     return NextResponse.json(resultadoConsulta, { status: 200 });
@@ -289,25 +289,9 @@ export async function DELETE(request) {
     const id = url.searchParams.get("id");
 
     //Eliminamos modelos
-    const consulta = await prisma.modelos.update({
+    const consulta = await prisma.starservice.update({
       where: {
-        idmodelos: parseInt(id),
-      },
-      data: { status: 0 },
-    });
-
-    //Eliminamos relaciones colores_modelos
-    const consultaModelos = await prisma.colores_modelos.update({
-      where: {
-        idmodelos: parseInt(id),
-      },
-      data: { status: 0 },
-    });
-
-    //Eliminamos relaciones colores_modelos
-    const consultaModelosCategorias = await prisma.categorias_modelos.update({
-      where: {
-        idmodelos: parseInt(id),
+        idstarservice: parseInt(id),
       },
       data: { status: 0 },
     });

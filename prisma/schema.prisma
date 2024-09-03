@@ -54,22 +54,23 @@ model anios {
 }
 
 model modelos {
-  idmodelos       Int               @id @default(autoincrement())
-  idanios         Int?
-  nombre          String?           @db.Text
-  frase           String?           @db.Text
-  imagen          String?           @db.Text
-  url             String?           @db.VarChar(45)
-  pdf             String?           @db.VarChar(45)
-  status          Int?
-  orden           Int?
-  created_at      DateTime?         @default(now()) @db.DateTime(0)
-  updated_at      DateTime?         @default(now()) @db.DateTime(0)
-  colores_modelos colores_modelos[]
-  leads           leads[]
-  anios           anios?            @relation(fields: [idanios], references: [idanios], onDelete: NoAction, onUpdate: NoAction, map: "FK_MODELO_ANIOS")
-  starservice     starservice[]
-  versiones       versiones[]
+  idmodelos          Int                  @id @default(autoincrement())
+  idanios            Int?
+  nombre             String?              @db.Text
+  frase              String?              @db.Text
+  imagen             String?              @db.Text
+  url                String?              @db.LongText
+  pdf                String?              @db.LongText
+  status             Int?
+  orden              Int?
+  created_at         DateTime?            @default(now()) @db.DateTime(0)
+  updated_at         DateTime?            @default(now()) @db.DateTime(0)
+  categorias_modelos categorias_modelos[]
+  colores_modelos    colores_modelos[]
+  leads              leads[]
+  anios              anios?               @relation(fields: [idanios], references: [idanios], onDelete: NoAction, onUpdate: NoAction, map: "FK_MODELO_ANIOS")
+  starservice        starservice[]
+  versiones          versiones[]
 
   @@index([idanios], map: "FK_MODELO_ANIOS_idx")
 }
@@ -247,15 +248,31 @@ model starservice {
   created_at    DateTime? @default(now()) @db.DateTime(0)
   updated_at    DateTime? @default(now()) @db.DateTime(0)
   idmodelos     Int?
+  orden         Int?
   modelos       modelos?  @relation(fields: [idmodelos], references: [idmodelos], onDelete: NoAction, onUpdate: NoAction, map: "star_service_modelos")
 
   @@index([idmodelos], map: "star_service_modelos_idx")
 }
 
 model categoriaauto {
-  idcategoriaauto Int       @id @default(autoincrement())
-  nombre          String?   @db.VarChar(300)
-  status          Int?
-  created_at      DateTime? @default(now()) @db.DateTime(0)
-  updated_at      DateTime? @default(now()) @db.DateTime(0)
+  idcategoriaauto    Int                  @id @default(autoincrement())
+  nombre             String?              @db.VarChar(300)
+  status             Int?
+  created_at         DateTime?            @default(now()) @db.DateTime(0)
+  updated_at         DateTime?            @default(now()) @db.DateTime(0)
+  categorias_modelos categorias_modelos[]
+}
+
+model categorias_modelos {
+  idcategorias_modelos Int            @id @default(autoincrement())
+  idmodelos            Int?
+  idcategoriaauto      Int?
+  status               Int?
+  created_at           DateTime?      @default(now()) @db.DateTime(0)
+  updated_at           DateTime?      @default(now()) @db.DateTime(0)
+  categoriaauto        categoriaauto? @relation(fields: [idcategoriaauto], references: [idcategoriaauto], onDelete: NoAction, onUpdate: NoAction, map: "categorias_modelos_categoria_fk")
+  modelos              modelos?       @relation(fields: [idmodelos], references: [idmodelos], onDelete: NoAction, onUpdate: NoAction, map: "categorias_modelos_modelos_fk")
+
+  @@index([idcategoriaauto], map: "categorias_modelos_categoria_fk_idx")
+  @@index([idmodelos], map: "categorias_modelos_fk_idx")
 }
