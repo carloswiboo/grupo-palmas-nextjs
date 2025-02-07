@@ -8,6 +8,8 @@ import bcrypt from "bcryptjs";
 import { createToken } from "@/lib/createToken";
 import cookie from "cookie";
 
+
+import { serialize } from 'cookie';
 /**
  * @swagger
  * /api/login:
@@ -100,7 +102,7 @@ export async function POST(request) {
       delete payload.activacion;
       delete payload.cambiopassword;
       const token = await createToken(payload);
-      const serializedCookie = cookie.serialize(
+      const serializedCookie = serialize(
         process.env.COOKIE_NAME,
         token,
         {
