@@ -92,6 +92,9 @@ export async function POST(request) {
       );
     }
 
+
+    debugger;
+
     const isMatch = await bcrypt.compare(password, user[0].contrasena);
 
     delete user.contrasena;

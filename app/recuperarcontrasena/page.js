@@ -12,7 +12,6 @@ const LoginScreenComponent = () => {
   const formik = useFormik({
     initialValues: {
       usuario: "",
-      password: "",
     },
     validationSchema: Yup.object({
       usuario: Yup.string()
@@ -70,7 +69,7 @@ const LoginScreenComponent = () => {
             alt="Suzuki Palmas"
           />
           <h2 className="mt-1 text-center text-xl font-bold leading-9 tracking-tight text-gray-900">
-            Inicio de Sesión
+            Recuperación de Contraseña
           </h2>
           <h4 className="mt-1 text-center text-sm font-thin tracking-tight text-gray-900">
             Grupo Palmas Administración
@@ -107,48 +106,11 @@ const LoginScreenComponent = () => {
             </div>
 
             <div>
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Contraseña
-                </label>
-                <div className="text-sm">
-                  <a
-                    href="/recuperarcontrasena"
-                    className="font-semibold text-red-600 hover:text-red-500"
-                  >
-                    Olvidé la contraseña?
-                  </a>
-                </div>
-              </div>
-              <div className="mt-2">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-red-600 sm:text-sm sm:leading-6"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.password}
-                />
-                {formik.touched.contrasena && formik.errors.password ? (
-                  <div className="text-red-600 text-sm">
-                    {formik.errors.password}
-                  </div>
-                ) : null}
-              </div>
-            </div>
-
-            <div>
               <button
                 type="submit"
                 className="flex w-full justify-center rounded-md bg-red-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
               >
-                Iniciar Sesión
+                Solicitar correo de Recuperación
               </button>
             </div>
           </form>
