@@ -28,6 +28,9 @@ export async function GET(request) {
         },
         status: 1,
       },
+      orderBy: {
+        created_at: 'desc', // Ordenar por fecha de inicio más reciente primero
+      },
     });
 
     return NextResponse.json(promocionesEnRango, { status: 200 });
