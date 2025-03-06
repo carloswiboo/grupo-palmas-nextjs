@@ -1,6 +1,9 @@
+"use client";
 import React from "react";
 
 const Home = () => {
+  const [anio, setAnio] = React.useState(new Date().getFullYear());
+
   return (
     <div
       className="flex flex-col items-center justify-center h-screen bg-black"
@@ -14,7 +17,9 @@ const Home = () => {
       }}
     >
       <h1 className="text-white text-3xl">Suzuki Palmas API</h1>
-      <h1 className="text-white text-xl mt-4">Digitalia - Wiboo</h1>
+      <h1 className="text-white text-xl mt-4"> Digitalia - Wiboo</h1>
+
+      <h1 className="text-white text-sm mt-4"> &copy; {anio}</h1>
     </div>
   );
 };
