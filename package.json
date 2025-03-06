@@ -36,7 +36,7 @@
     "nodemailer": "^6.9.13",
     "react": "^18",
     "react-dom": "^18",
-    "react-hot-toast": "^2.4.1",
+    "react-hot-toast": "^2.5.2",
     "react-toastify": "^10.0.5",
     "swagger-ui-react": "^5.17.10",
     "uuid": "^9.0.1",

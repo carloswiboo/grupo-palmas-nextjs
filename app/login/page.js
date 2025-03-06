@@ -4,7 +4,7 @@ import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { postLoginUser } from "@/lib/api/apiLogin";
-import { toast } from "react-toastify";
+import toast, { Toaster } from "react-hot-toast";
 
 const LoginScreenComponent = () => {
   const [cargando, setCargando] = React.useState(false);
@@ -23,11 +23,14 @@ const LoginScreenComponent = () => {
     onSubmit: (values) => {
       setCargando(true);
       postLoginUser(values).then((resultado) => {
+        debugger;
         if (resultado.status == 200) {
           window.location.reload();
         } else {
+          debugger;
+
+          toast.error(resultado.response.data.error);
           setCargando(false);
-          toast.error("Ha ocurrido un error al iniciar la cuenta.");
         }
       });
     },
@@ -35,6 +38,7 @@ const LoginScreenComponent = () => {
 
   return (
     <>
+      <Toaster />
       {cargando == true ? (
         <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-black/30 font-light text-white text-center">
           <div>
@@ -62,96 +66,104 @@ const LoginScreenComponent = () => {
         </div>
       ) : null}
 
-      <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <img
-            className="mx-auto w-10 w-auto"
-            src="https://suzukipalmas.com.mx/assets/suzukiLogo.png"
-            alt="Suzuki Palmas"
-          />
-          <h2 className="mt-1 text-center text-xl font-bold leading-9 tracking-tight text-gray-900">
-            Inicio de Sesión
-          </h2>
-          <h4 className="mt-1 text-center text-sm font-thin tracking-tight text-gray-900">
-            Grupo Palmas Administración
-          </h4>
-        </div>
-
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form className="space-y-6" onSubmit={formik.handleSubmit}>
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium leading-6 text-gray-900"
-              >
-                Correo Electrónico
-              </label>
-              <div className="mt-2">
-                <input
-                  id="usuario"
-                  name="usuario"
-                  type="email"
-                  autoComplete="usuario"
-                  required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.usuario}
-                />
-                {formik.touched.email && formik.errors.usuario ? (
-                  <div className="text-red-600 text-sm">
-                    {formik.errors.usuario}
-                  </div>
-                ) : null}
-              </div>
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between">
+      <div
+        className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8"
+        style={{
+          backgroundImage: "url('/fondo.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <div className="sm:mx-auto sm:w-full sm:max-w-sm bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+          <div className="">
+            <img
+              className="mx-auto w-10 w-auto"
+              src="https://suzukipalmas.com.mx/assets/suzukiLogo.png"
+              alt="Suzuki Palmas"
+            />
+            <h2 className="mt-1 text-center text-xl font-bold leading-9 tracking-tight text-gray-900">
+              Inicio de Sesión
+            </h2>
+            <h4 className="mt-1 text-center text-sm font-extralight tracking-tight text-gray-900">
+              Administración Wiboo - Digitalia
+            </h4>
+          </div>
+          <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+            <form className="space-y-6" onSubmit={formik.handleSubmit}>
+              <div>
                 <label
-                  htmlFor="password"
+                  htmlFor="email"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 >
-                  Contraseña
+                  Correo Electrónico
                 </label>
-                <div className="text-sm">
-                  <a
-                    href="/recuperarcontrasena"
-                    className="font-semibold text-red-600 hover:text-red-500"
-                  >
-                    Olvidé la contraseña?
-                  </a>
+                <div className="mt-2">
+                  <input
+                    id="usuario"
+                    name="usuario"
+                    type="email"
+                    autoComplete="usuario"
+                    required
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.usuario}
+                  />
+                  {formik.touched.email && formik.errors.usuario ? (
+                    <div className="text-red-600 text-sm">
+                      {formik.errors.usuario}
+                    </div>
+                  ) : null}
                 </div>
               </div>
-              <div className="mt-2">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-red-600 sm:text-sm sm:leading-6"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.password}
-                />
-                {formik.touched.contrasena && formik.errors.password ? (
-                  <div className="text-red-600 text-sm">
-                    {formik.errors.password}
-                  </div>
-                ) : null}
-              </div>
-            </div>
 
-            <div>
-              <button
-                type="submit"
-                className="flex w-full justify-center rounded-md bg-red-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
-              >
-                Iniciar Sesión
-              </button>
-            </div>
-          </form>
+              <div>
+                <div className="flex items-center justify-between">
+                  <label
+                    htmlFor="password"
+                    className="block text-sm font-medium leading-6 text-gray-900"
+                  >
+                    Contraseña
+                  </label>
+                  <div className="text-sm hidden">
+                    <a
+                      href="/recuperarcontrasena"
+                      className="font-semibold text-red-600 hover:text-red-500"
+                    >
+                      Olvidé la contraseña?
+                    </a>
+                  </div>
+                </div>
+                <div className="mt-2">
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    autoComplete="current-password"
+                    required
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-red-600 sm:text-sm sm:leading-6"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.password}
+                  />
+                  {formik.touched.contrasena && formik.errors.password ? (
+                    <div className="text-red-600 text-sm">
+                      {formik.errors.password}
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+
+              <div>
+                <button
+                  type="submit"
+                  className="flex w-full justify-center rounded-md bg-red-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+                >
+                  Iniciar Sesión
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </>
