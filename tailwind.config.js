@@ -1,5 +1,5 @@
 import colors from "tailwindcss/colors";
-
+import flowbite from "flowbite-react/tailwind";
 const config = {
   content: [
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -7,6 +7,7 @@ const config = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     // Path to Tremor module
+    flowbite.content(),
     "./node_modules/@tremor/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {

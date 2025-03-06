@@ -33,6 +33,8 @@ import { AppProvider } from "@shopify/polaris";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import LoadingDataComponent from "../components/LoadingDataComponent/LoadingDataComponent";
+import { useLoading } from "@/context/LoadingContext";
 
 const navigation = [
   { name: "Dashboard", href: "#", icon: HomeIcon, current: true },
@@ -45,16 +47,23 @@ const navigation = [
 const teams = [
   {
     id: 1,
-    name: "Informática",
+    name: "Contacto Web",
     href: "tel:+524777522331",
     initial: "TI",
     current: false,
   },
   {
     id: 2,
-    name: "Marketing",
-    href: "tel:+524777522331",
+    name: "Contacto Marketing",
+    href: "tel:+524771137983",
     initial: "MKT",
+    current: false,
+  },
+  {
+    id: 2,
+    name: "Contacto Ad's",
+    href: "tel:+524776001623",
+    initial: "AD'S",
     current: false,
   },
 ];
@@ -75,6 +84,8 @@ export default function DashboardLayout({ children }) {
   const [finalDataMenu, setFinalDataMenu] = React.useState([]);
 
   const [finalDataUsuario, setFinalDataUsuario] = React.useState({});
+
+  const { showLoading, hideLoading, isLoading } = useLoading();
 
   React.useEffect(() => {
     getMenuPrivateApi().then((resultado) => {
@@ -98,6 +109,8 @@ export default function DashboardLayout({ children }) {
   return (
     <>
       <AppProvider i18n={esTranslations}>
+        {isLoading && <LoadingDataComponent />}
+
         <div>
           <Transition.Root show={sidebarOpen} as={Fragment}>
             <Dialog
@@ -203,7 +216,7 @@ export default function DashboardLayout({ children }) {
                           </li>
                           <li>
                             <div className="text-xs font-semibold leading-6 text-indigo-200">
-                              Información
+                              Contacto
                             </div>
                             <ul role="list" className="-mx-2 mt-2 space-y-1">
                               {teams.map((team) => (

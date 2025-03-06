@@ -26,6 +26,7 @@
     "bootstrap": "^5.3.3",
     "cookie": "^1.0.2",
     "exceljs": "^4.4.0",
+    "flowbite-react": "^0.10.2",
     "formik": "^2.4.6",
     "handlebars": "^4.7.8",
     "jose": "^5.2.3",
@@ -38,10 +39,11 @@
     "react": "^18",
     "react-dom": "^18",
     "react-hot-toast": "^2.5.2",
+    "react-icons": "^5.5.0",
     "react-toastify": "^10.0.5",
     "swagger-ui-react": "^5.17.10",
     "uuid": "^9.0.1",
-    "yup": "^1.4.0"
+    "yup": "^1.6.1"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.7",
