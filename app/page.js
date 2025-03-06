@@ -1,7 +1,22 @@
 import React from "react";
 
 const Home = () => {
-  return <div>Grupo Palmas API</div>;
+  return (
+    <div
+      className="flex flex-col items-center justify-center h-screen bg-black"
+      style={{
+        backdropFilter: "blur(10px)",
+        background:
+          " linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),url('/fondo.jpg')",
+        backgroundSize: "cover",
+
+        backgroundPosition: "center",
+      }}
+    >
+      <h1 className="text-white text-3xl">Suzuki Palmas API</h1>
+      <h1 className="text-white text-xl mt-4">Digitalia - Wiboo</h1>
+    </div>
+  );
 };
 
 export default Home;
