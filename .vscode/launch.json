@@ -5,22 +5,27 @@
       "name": "Next.js: Debug API Routes",
       "type": "node",
       "request": "launch",
-      "runtimeExecutable": "node",
-      "runtimeArgs": ["--inspect", "${workspaceFolder}/node_modules/next/dist/bin/next", "dev"],
-      "port": 9229,
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "console": "integratedTerminal",
       "outputCapture": "std",
       "protocol": "inspector",
-      "skipFiles": ["<node_internals>/**"]
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
     },
     {
       "name": "Next.js: Attach to API Process",
       "type": "node",
       "request": "attach",
-      "port": 9229,
       "restart": true,
       "protocol": "inspector",
-      "skipFiles": ["<node_internals>/**"]
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
     }
   ]
 }
