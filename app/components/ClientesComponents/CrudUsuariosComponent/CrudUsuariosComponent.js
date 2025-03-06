@@ -19,7 +19,6 @@ import { AxiosAPIPost } from "@/lib/PalmasAPIMethods/AxiosAPIPost";
 import { AxiosAPIPut } from "@/lib/PalmasAPIMethods/AxiosAPIPut";
 import { AxiosAPIDelete } from "@/lib/PalmasAPIMethods/AxiosAPIDelete";
 
-
 let nombreVista = "Usuarios";
 let esMasculino = true;
 

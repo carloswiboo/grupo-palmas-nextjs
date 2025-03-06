@@ -38,7 +38,7 @@ export default function Page({ params, searchParams }) {
         addButton={true}
       />
 
-      <ContentUsuariosComponent />
+      <ContentUsuariosComponent finalData={finalData} />
 
       {crud.type != null && <CrudUsuariosComponent />}
     </div>
