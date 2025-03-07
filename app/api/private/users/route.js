@@ -139,12 +139,12 @@ export async function POST(request) {
       });
 
       const transporter = nodemailer.createTransport({
-        host: "smtp.gmail.com",
-        port: 465,
-        secure: true,
+        host: process.env.SMTP_HOST,
+        port: process.env.SMTP_PORT,
+        secure: false,
         auth: {
-          user: "notificaciones@gironafilmfestival.com",
-          pass: "kgrr peug rrdb ypuh",
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASSWORD,
         },
       });
 
