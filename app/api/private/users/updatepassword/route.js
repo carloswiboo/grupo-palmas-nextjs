@@ -57,21 +57,31 @@ import bcrypt from "bcryptjs";
  */
 export async function PATCH(request) {
   let resultado = await request.json();
-  let id = parseInt(resultado.contrasena);
-  delete resultado.contrasena;
+  let id = parseInt(resultado.idusuario);
+
   resultado.status = 1;
 
   debugger;
   resultado.contrasena = await hashPassword(resultado.contrasena);
 
-  resultado.updated_at = new Date().toISOString();
   try {
     const consulta = await prisma.usuarios.update({
       where: {
         idusuario: id,
       },
-      data: resultado,
+      data: {
+        contrasena: resultado.contrasena,
+      },
     });
+
+    debugger;
+
+    if (!consulta) {
+      return NextResponse.json(
+        { error: "No se encontró el usuario" },
+        { status: 500 }
+      );
+    }
 
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
@@ -85,7 +95,7 @@ export async function PATCH(request) {
 
     await transporter.sendMail({
       from: "Help Desk Wiboo - Digitalia <carlos@wiboo.com.mx>",
-      to: resultCreacionUsuario.email,
+      to: consulta.email,
       subject: "Notificación de modificación de contraseña",
       html: `Hola, te informamos que se ha modificado la contraseña para acceder al sistema del Grupo Palmas. Si no fuiste tú, por favor, contacta al administrador del sistema`,
     });

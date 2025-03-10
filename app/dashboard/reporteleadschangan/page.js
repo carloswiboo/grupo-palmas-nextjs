@@ -23,7 +23,7 @@ const ReporteLeadsPalmasScreenComponent = () => {
 
     showLoading("Cargando Reporte");
 
-    AxiosAPIGet("/api/private/getcontacts", {
+    AxiosAPIGet("https://changanbk.wiboo.mx/ws/contact/getLeads/", {
       fechaInicio: fechaInicio,
       fechaFin: fechaFin,
     }).then((response) => {
@@ -41,7 +41,7 @@ const ReporteLeadsPalmasScreenComponent = () => {
     <>
       {isLoading && <LoadingDataComponent />}
       <div className="p-4">
-        <h1 className="text-2xl font-bold mb-4">Reporte de Leads Suzuki</h1>
+        <h1 className="text-2xl font-bold mb-4">Reporte de Leads Changan</h1>
         <form
           onSubmit={handleSubmit}
           className="mb-4 grid grid-cols-1 md:grid-cols-3 gap-4"
@@ -89,13 +89,17 @@ const ReporteLeadsPalmasScreenComponent = () => {
               <tbody>
                 {data.map((lead) => (
                   <tr key={lead.id}>
-                    <td className="py-2 px-4 border-b">{lead.nombre}</td>
-                    <td className="py-2 px-4 border-b">{lead.telefono}</td>
-                    <td className="py-2 px-4 border-b">{lead.correo}</td>
-                    <td className="py-2 px-4 border-b">{lead.agencia}</td>
-                    <td className="py-2 px-4 border-b">{lead.vehiculo}</td>
+                    <td className="py-2 px-4 border-b text-uppercase">
+                      {lead.name} {lead.lastname}
+                    </td>
+                    <td className="py-2 px-4 border-b">{lead.phone}</td>
+                    <td className="py-2 px-4 border-b">{lead.email}</td>
+                    <td className="py-2 px-4 border-b">{lead.agency.name}</td>
                     <td className="py-2 px-4 border-b">
-                      {DateTime.fromISO(lead.creacion)
+                      {lead.contactType.name}
+                    </td>
+                    <td className="py-2 px-4 border-b">
+                      {DateTime.fromISO(lead.createdAt)
                         .setZone("America/Mexico_City")
                         .toLocaleString(DateTime.DATETIME_MED)}
                     </td>
