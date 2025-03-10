@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-
+import { FcKey } from "react-icons/fc";
 const ContentUsuariosComponent = ({ finalData }) => {
   return (
     <>
@@ -25,6 +25,13 @@ const ContentUsuariosComponent = ({ finalData }) => {
             <p className="text-gray-600 mb-1">
               Status: {user.status === 1 ? "Activo" : "Inactivo"}
             </p>
+
+            <button
+              type="button"
+              className="rounded bg-gray-100 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-gray-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-100"
+            >
+              <FcKey /> Cambiar Contraseña
+            </button>
           </div>
         ))}
       </div>

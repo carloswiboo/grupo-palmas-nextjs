@@ -24,7 +24,6 @@ export default function Page({ params, searchParams }) {
   useEffect(() => {
     showLoading("Cargando " + titulo);
     getUsersPrivateApi().then((resultado) => {
-      debugger;
       setFinalData(resultado.data);
       hideLoading();
     });

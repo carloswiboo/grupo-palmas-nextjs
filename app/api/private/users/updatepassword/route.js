@@ -62,10 +62,7 @@ export async function PATCH(request) {
   resultado.status = 1;
 
   debugger;
-
   resultado.contrasena = await hashPassword(resultado.contrasena);
-
-  debugger;
 
   resultado.updated_at = new Date().toISOString();
   try {
