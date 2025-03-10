@@ -8,8 +8,7 @@ import bcrypt from "bcryptjs";
 import { createToken } from "@/lib/createToken";
 import cookie from "cookie";
 
-
-import { serialize } from 'cookie';
+import { serialize } from "cookie";
 /**
  * @swagger
  * /api/login:
@@ -92,7 +91,6 @@ export async function POST(request) {
       );
     }
 
-
     debugger;
 
     const isMatch = await bcrypt.compare(password, user[0].contrasena);
@@ -105,17 +103,13 @@ export async function POST(request) {
       delete payload.activacion;
       delete payload.cambiopassword;
       const token = await createToken(payload);
-      const serializedCookie = serialize(
-        process.env.COOKIE_NAME,
-        token,
-        {
-          httpOnly: false,
-          secure: true, // Solo enviar a través de HTTPS
-          sameSite: "strict", // Mejorar la seguridad
-          maxAge: 60 * 60 * 24, // 1 día
-          path: "/",
-        }
-      );
+      const serializedCookie = serialize(process.env.COOKIE_NAME, token, {
+        httpOnly: false,
+        secure: true, // Solo enviar a través de HTTPS
+        sameSite: "strict", // Mejorar la seguridad
+        maxAge: 60 * 60 * 24, // 1 día
+        path: "/",
+      });
 
       const response = NextResponse.json({ success: true }, { status: 200 });
       response.headers.set("Set-Cookie", serializedCookie);
