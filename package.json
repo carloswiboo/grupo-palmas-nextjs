@@ -24,6 +24,7 @@
     "axios": "^1.6.8",
     "bcryptjs": "^2.4.3",
     "bootstrap": "^5.3.3",
+    "caniuse-lite": "^1.0.30001702",
     "cookie": "^1.0.2",
     "exceljs": "^4.4.0",
     "flowbite-react": "^0.10.2",
