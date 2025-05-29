@@ -278,3 +278,11 @@ model categorias_modelos {
   @@index([idcategoriaauto], map: "categorias_modelos_categoria_fk_idx")
   @@index([idmodelos], map: "categorias_modelos_fk_idx")
 }
+
+model log {
+  idlog         Int       @id @default(autoincrement())
+  idusuario     Int?
+  accion        String?   @db.VarChar(200)
+  creation_date DateTime? @default(now()) @db.DateTime(0)
+  status        Int?
+}

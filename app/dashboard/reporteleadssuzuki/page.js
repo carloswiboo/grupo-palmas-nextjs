@@ -4,6 +4,7 @@ import { AxiosAPIGet } from "@/lib/PalmasAPIMethods/AxiosAPIGet";
 import React, { useState, useEffect } from "react";
 import { useLoading } from "@/context/LoadingContext";
 import LoadingDataComponent from "@/app/components/LoadingDataComponent/LoadingDataComponent";
+import * as XLSX from 'xlsx';
 
 const ReporteLeadsPalmasScreenComponent = () => {
   const [fechaInicio, setFechaInicio] = useState("");
@@ -32,9 +33,36 @@ const ReporteLeadsPalmasScreenComponent = () => {
         setData([]);
         return;
       } else {
+        console.log("Datos recibidos:", response.data); // Para ver la estructura real
         setData(response.data);
       }
     });
+  };
+
+  const handleDownloadExcel = () => {
+    if (data.length === 0) {
+      alert('No hay datos para descargar');
+      return;
+    }
+
+    const excelData = data.map((lead, index) => ({
+      'No.': index + 1,
+      'Nombre': lead.name || lead.nombre || 'N/A',
+      'Teléfono': lead.phone || lead.telefono || 'N/A',
+      'Correo': lead.email || lead.correo || 'N/A',
+      'Agencia': lead.agency || lead.agencia || 'N/A',
+      'Vehículo': lead.vehicle || lead.vehiculo || 'N/A',
+      'Fecha': DateTime.fromISO(lead.creacion || lead.created_at || lead.date)
+        .setZone("America/Mexico_City")
+        .toLocaleString(DateTime.DATETIME_MED)
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(excelData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Leads Suzuki');
+    
+    const fileName = `Reporte_Leads_Suzuki_${DateTime.now().toFormat('yyyy-MM-dd')}.xlsx`;
+    XLSX.writeFile(workbook, fileName);
   };
 
   return (
@@ -74,36 +102,74 @@ const ReporteLeadsPalmasScreenComponent = () => {
           </div>
         </form>
         {data.length > 0 && (
-          <div className="overflow-x-auto">
-            <table className="min-w-full bg-white">
-              <thead>
-                <tr>
-                  <th className="py-2 px-4 border-b text-left">Nombre</th>
-                  <th className="py-2 px-4 border-b text-left">Teléfono</th>
-                  <th className="py-2 px-4 border-b text-left">Correo</th>
-                  <th className="py-2 px-4 border-b text-left">Agencia</th>
-                  <th className="py-2 px-4 border-b text-left">Vehículo</th>
-                  <th className="py-2 px-4 border-b text-left">Fecha</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.map((lead) => (
-                  <tr key={lead.id}>
-                    <td className="py-2 px-4 border-b">{lead.nombre}</td>
-                    <td className="py-2 px-4 border-b">{lead.telefono}</td>
-                    <td className="py-2 px-4 border-b">{lead.correo}</td>
-                    <td className="py-2 px-4 border-b">{lead.agencia}</td>
-                    <td className="py-2 px-4 border-b">{lead.vehiculo}</td>
-                    <td className="py-2 px-4 border-b">
-                      {DateTime.fromISO(lead.creacion)
-                        .setZone("America/Mexico_City")
-                        .toLocaleString(DateTime.DATETIME_MED)}
-                    </td>
+          <>
+            <div className="mb-4 flex justify-end">
+              <button
+                onClick={handleDownloadExcel}
+                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md flex items-center gap-2"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Descargar Excel
+              </button>
+            </div>
+            <div className="overflow-x-auto shadow-lg rounded-lg border border-gray-200">
+              <table className="min-w-full bg-white">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200 w-[50px]">
+                      Nombre
+                    </th>
+                    <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                      Teléfono
+                    </th>
+                    <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                      Correo
+                    </th>
+                    <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                      Agencia
+                    </th>
+                    <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                      Vehículo
+                    </th>
+                    <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                      Fecha
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {data.map((lead, index) => (
+                    <tr
+                      key={lead.id}
+                      className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                    >
+                      <td className="py-4 px-6 text-sm font-medium text-gray-900 w-[50px] break-words">
+                        {lead.name || lead.nombre || 'N/A'}
+                      </td>
+                      <td className="py-4 px-6 text-sm text-gray-500 whitespace-nowrap">
+                        {lead.phone || lead.telefono || 'N/A'}
+                      </td>
+                      <td className="py-4 px-6 text-sm text-gray-500 whitespace-nowrap">
+                        {lead.email || lead.correo || 'N/A'}
+                      </td>
+                      <td className="py-4 px-6 text-sm text-gray-500 whitespace-nowrap">
+                        {lead.agency || lead.agencia || 'N/A'}
+                      </td>
+                      <td className="py-4 px-6 text-sm text-gray-500 whitespace-nowrap">
+                        {lead.vehicle || lead.vehiculo || 'N/A'}
+                      </td>
+                      <td className="py-4 px-6 text-sm text-gray-500 whitespace-nowrap">
+                        {DateTime.fromISO(lead.creacion || lead.created_at || lead.date)
+                          .setZone("America/Mexico_City")
+                          .toLocaleString(DateTime.DATETIME_MED)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
     </>

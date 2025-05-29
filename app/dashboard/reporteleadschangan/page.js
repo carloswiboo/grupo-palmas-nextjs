@@ -4,6 +4,7 @@ import { AxiosAPIGet } from "@/lib/PalmasAPIMethods/AxiosAPIGet";
 import React, { useState, useEffect } from "react";
 import { useLoading } from "@/context/LoadingContext";
 import LoadingDataComponent from "@/app/components/LoadingDataComponent/LoadingDataComponent";
+import * as XLSX from "xlsx";
 
 const ReporteLeadsPalmasScreenComponent = () => {
   const [fechaInicio, setFechaInicio] = useState("");
@@ -35,6 +36,34 @@ const ReporteLeadsPalmasScreenComponent = () => {
         setData(response.data);
       }
     });
+  };
+
+  const handleDownloadExcel = () => {
+    if (data.length === 0) {
+      alert("No hay datos para descargar");
+      return;
+    }
+
+    const excelData = data.map((lead, index) => ({
+      "No.": index + 1,
+      Nombre: `${lead.name} ${lead.lastname}`,
+      Teléfono: lead.phone,
+      Correo: lead.email,
+      Agencia: lead.agency.name,
+      Vehículo: lead.contactType.name,
+      Fecha: DateTime.fromISO(lead.createdAt)
+        .setZone("America/Mexico_City")
+        .toLocaleString(DateTime.DATETIME_MED),
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(excelData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Leads Changan");
+
+    const fileName = `Reporte_Leads_Changan_${DateTime.now().toFormat(
+      "yyyy-MM-dd"
+    )}.xlsx`;
+    XLSX.writeFile(workbook, fileName);
   };
 
   return (
@@ -74,40 +103,63 @@ const ReporteLeadsPalmasScreenComponent = () => {
           </div>
         </form>
         {data.length > 0 && (
-          <div className="overflow-x-auto">
-            <table className="min-w-full bg-white">
-              <thead>
-                <tr>
-                  <th className="py-2 px-4 border-b text-left">Nombre</th>
-                  <th className="py-2 px-4 border-b text-left">Teléfono</th>
-                  <th className="py-2 px-4 border-b text-left">Correo</th>
-                  <th className="py-2 px-4 border-b text-left">Agencia</th>
-                  <th className="py-2 px-4 border-b text-left">Vehículo</th>
-                  <th className="py-2 px-4 border-b text-left">Fecha</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.map((lead) => (
-                  <tr key={lead.id}>
-                    <td className="py-2 px-4 border-b text-uppercase">
-                      {lead.name} {lead.lastname}
-                    </td>
-                    <td className="py-2 px-4 border-b">{lead.phone}</td>
-                    <td className="py-2 px-4 border-b">{lead.email}</td>
-                    <td className="py-2 px-4 border-b">{lead.agency.name}</td>
-                    <td className="py-2 px-4 border-b">
-                      {lead.contactType.name}
-                    </td>
-                    <td className="py-2 px-4 border-b">
-                      {DateTime.fromISO(lead.createdAt)
-                        .setZone("America/Mexico_City")
-                        .toLocaleString(DateTime.DATETIME_MED)}
-                    </td>
+          <>
+            <div className="mb-4 flex justify-end">
+              <button
+                onClick={handleDownloadExcel}
+                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md flex items-center gap-2"
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
+                </svg>
+                Descargar Excel
+              </button>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="min-w-full bg-white">
+                <thead>
+                  <tr>
+                    <th className="py-2 px-4 border-b text-left">Nombre</th>
+                    <th className="py-2 px-4 border-b text-left">Teléfono</th>
+                    <th className="py-2 px-4 border-b text-left">Correo</th>
+                    <th className="py-2 px-4 border-b text-left">Agencia</th>
+                    <th className="py-2 px-4 border-b text-left">Vehículo</th>
+                    <th className="py-2 px-4 border-b text-left">Fecha</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {data.map((lead) => (
+                    <tr key={lead.id}>
+                      <td className="py-2 px-4 border-b text-uppercase">
+                        {lead.name} {lead.lastname}
+                      </td>
+                      <td className="py-2 px-4 border-b">{lead.phone}</td>
+                      <td className="py-2 px-4 border-b">{lead.email}</td>
+                      <td className="py-2 px-4 border-b">{lead.agency.name}</td>
+                      <td className="py-2 px-4 border-b">
+                        {lead.contactType.name}
+                      </td>
+                      <td className="py-2 px-4 border-b">
+                        {DateTime.fromISO(lead.createdAt)
+                          .setZone("America/Mexico_City")
+                          .toLocaleString(DateTime.DATETIME_MED)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
     </>
