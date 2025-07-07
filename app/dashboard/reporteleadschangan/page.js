@@ -1,9 +1,9 @@
 "use client";
-import { DateTime } from "luxon";
-import { AxiosAPIGet } from "@/lib/PalmasAPIMethods/AxiosAPIGet";
-import React, { useState, useEffect } from "react";
-import { useLoading } from "@/context/LoadingContext";
 import LoadingDataComponent from "@/app/components/LoadingDataComponent/LoadingDataComponent";
+import { useLoading } from "@/context/LoadingContext";
+import { AxiosAPIGet } from "@/lib/PalmasAPIMethods/AxiosAPIGet";
+import { DateTime } from "luxon";
+import { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
 
 const ReporteLeadsPalmasScreenComponent = () => {
@@ -50,7 +50,7 @@ const ReporteLeadsPalmasScreenComponent = () => {
       Teléfono: lead.phone,
       Correo: lead.email,
       Agencia: lead.agency.name,
-      Vehículo: lead.contactType.name,
+      Vehículo: lead.car?.name || "No disponible",
       Fecha: DateTime.fromISO(lead.createdAt)
         .setZone("America/Mexico_City")
         .toLocaleString(DateTime.DATETIME_MED),
@@ -147,7 +147,7 @@ const ReporteLeadsPalmasScreenComponent = () => {
                       <td className="py-2 px-4 border-b">{lead.email}</td>
                       <td className="py-2 px-4 border-b">{lead.agency.name}</td>
                       <td className="py-2 px-4 border-b">
-                        {lead.contactType.name}
+                        {lead?.car?.name || "No disponible"}
                       </td>
                       <td className="py-2 px-4 border-b">
                         {DateTime.fromISO(lead.createdAt)
