@@ -12,6 +12,7 @@ import {
   HomeIcon,
   UsersIcon,
   XMarkIcon,
+  LockClosedIcon,
 } from "@heroicons/react/24/outline";
 import {
   ChevronDownIcon,
@@ -85,6 +86,8 @@ export default function DashboardLayout({ children }) {
 
   const [finalDataUsuario, setFinalDataUsuario] = React.useState({});
 
+  const [isAuthorized, setIsAuthorized] = useState(true);
+
   const { showLoading, hideLoading, isLoading } = useLoading();
 
   React.useEffect(() => {
@@ -105,6 +108,42 @@ export default function DashboardLayout({ children }) {
 
     setFinalDataUsuario(decodedToken);
   }, []);
+
+  React.useEffect(() => {
+    if (finalDataMenu.length === 0) return;
+
+    const subpath = pathname.replace("/dashboard", "");
+    if (subpath === "" || subpath === "/") {
+      setIsAuthorized(true);
+      return;
+    }
+
+    const primarySegment = "/" + subpath.split("/").filter(Boolean)[0];
+    
+    const isAllowed = finalDataMenu.some(item => {
+      if (!item.enlace) return false;
+      const menuSegment = "/" + item.enlace.split("/").filter(Boolean)[0];
+      return menuSegment === primarySegment;
+    });
+
+    const knownScreens = [
+      "/analytics",
+      "/anios",
+      "/banners",
+      "/colores",
+      "/menuyfunciones",
+      "/modelos",
+      "/reporteleadschangan",
+      "/reporteleadssuzuki",
+      "/usuarios"
+    ];
+
+    if (knownScreens.includes(primarySegment)) {
+      setIsAuthorized(isAllowed);
+    } else {
+      setIsAuthorized(true);
+    }
+  }, [pathname, finalDataMenu]);
 
   return (
     <>
@@ -460,7 +499,26 @@ export default function DashboardLayout({ children }) {
             </div>
 
             <main className="py-10">
-              <div className="px-4 sm:px-6 lg:px-8">{children}</div>
+              <div className="px-4 sm:px-6 lg:px-8">
+                {isAuthorized ? children : (
+                  <div className="flex items-center justify-center min-h-[50vh] p-4">
+                    <div className="bg-white rounded-xl shadow-md border border-gray-100 max-w-md w-full p-8 text-center">
+                      <div className="w-16 h-16 bg-red-50 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6 border border-red-100 shadow-inner">
+                        <LockClosedIcon className="h-8 w-8 text-red-700" />
+                      </div>
+                      <h2 className="text-xl font-bold text-gray-900 mb-2">Acceso Restringido</h2>
+                      <p className="text-gray-500 mb-6 text-sm leading-relaxed">
+                        Tu perfil actual no cuenta con autorización para acceder a esta sección. Si consideras que esto es un error, por favor contacta al administrador.
+                      </p>
+                      <Link href="/dashboard">
+                        <div className="inline-block bg-red-800 text-white font-semibold rounded-lg px-6 py-2.5 hover:bg-red-900 transition-colors shadow-sm text-sm cursor-pointer">
+                          Volver al Inicio
+                        </div>
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </div>
             </main>
           </div>
         </div>

@@ -171,3 +171,41 @@ async function hashPassword(password) {
     throw new Error("Error hashing password");
   }
 }
+
+/**
+ * @swagger
+ * /api/private/users:
+ *   delete:
+ *     description: Eliminar un usuario (Soft Delete - desactivación / eliminación lógica)
+ *     tags:
+ *       - Privada - Usuarios
+ *     parameters:
+ *       - name: id
+ *         in: query
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Usuario eliminado correctamente
+ */
+export async function DELETE(request) {
+  try {
+    const url = new URL(request.url);
+    const id = url.searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json({ error: "Falta el ID del usuario" }, { status: 400 });
+    }
+
+    const consulta = await prisma.usuarios.update({
+      where: {
+        idusuario: parseInt(id, 10),
+      },
+      data: { status: 0 },
+    });
+    return NextResponse.json({ success: true, message: "Usuario eliminado correctamente" }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}

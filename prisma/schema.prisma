@@ -130,6 +130,8 @@ model menu {
   created_at     DateTime?        @default(now()) @db.DateTime(0)
   updated_at     DateTime?        @default(now()) @db.DateTime(0)
   funciones_menu funciones_menu[]
+  perfiles_menu  perfiles_menu[]
+  usuarios_menu  usuarios_menu[]
 }
 
 model agencias {
@@ -195,17 +197,22 @@ model tiposrazoncontacto {
 }
 
 model usuarios {
-  idusuario       Int       @id @default(autoincrement())
-  nombre          String?   @db.VarChar(1000)
-  apellidopaterno String?   @db.VarChar(1000)
-  apellidomaterno String?   @db.VarChar(1000)
-  email           String?   @db.VarChar(1000)
-  contrasena      String?   @db.VarChar(1000)
-  creation_date   DateTime? @default(now()) @db.DateTime(0)
-  update_date     DateTime? @default(now()) @db.DateTime(0)
-  activacion      String?   @db.VarChar(1000)
-  cambiopassword  String?   @db.VarChar(1000)
+  idusuario       Int             @id @default(autoincrement())
+  nombre          String?         @db.VarChar(1000)
+  apellidopaterno String?         @db.VarChar(1000)
+  apellidomaterno String?         @db.VarChar(1000)
+  email           String?         @db.VarChar(1000)
+  contrasena      String?         @db.VarChar(1000)
+  creation_date   DateTime?       @default(now()) @db.DateTime(0)
+  update_date     DateTime?       @default(now()) @db.DateTime(0)
+  activacion      String?         @db.VarChar(1000)
+  cambiopassword  String?         @db.VarChar(1000)
   status          Int?
+  idperfil        Int?
+  perfiles        perfiles?       @relation(fields: [idperfil], references: [idperfil], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuarios_perfiles")
+  usuarios_menu   usuarios_menu[]
+
+  @@index([idperfil], map: "fk_usuarios_perfiles_idx")
 }
 
 model tiposagencias {
@@ -285,4 +292,42 @@ model log {
   accion        String?   @db.VarChar(200)
   creation_date DateTime? @default(now()) @db.DateTime(0)
   status        Int?
+}
+
+model perfiles {
+  idperfil      Int             @id @default(autoincrement())
+  nombre        String?         @db.VarChar(100)
+  status        Int?            @default(1)
+  created_at    DateTime?       @default(now()) @db.DateTime(0)
+  updated_at    DateTime?       @default(now()) @db.DateTime(0)
+  perfiles_menu perfiles_menu[]
+  usuarios      usuarios[]
+}
+
+model perfiles_menu {
+  idperfiles_menu Int       @id @default(autoincrement())
+  idperfil        Int?
+  idmenu          Int?
+  status          Int?      @default(1)
+  created_at      DateTime? @default(now()) @db.DateTime(0)
+  updated_at      DateTime? @default(now()) @db.DateTime(0)
+  menu            menu?     @relation(fields: [idmenu], references: [idmenu], onDelete: NoAction, onUpdate: NoAction, map: "fk_perfiles_menu_menu")
+  perfiles        perfiles? @relation(fields: [idperfil], references: [idperfil], onDelete: NoAction, onUpdate: NoAction, map: "fk_perfiles_menu_perfiles")
+
+  @@index([idperfil], map: "fk_perfiles_menu_perfiles_idx")
+  @@index([idmenu], map: "fk_perfiles_menu_menu_idx")
+}
+
+model usuarios_menu {
+  idusuarios_menu Int       @id @default(autoincrement())
+  idusuario       Int?
+  idmenu          Int?
+  status          Int?      @default(1)
+  created_at      DateTime? @default(now()) @db.DateTime(0)
+  updated_at      DateTime? @default(now()) @db.DateTime(0)
+  menu            menu?     @relation(fields: [idmenu], references: [idmenu], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuarios_menu_menu")
+  usuarios        usuarios? @relation(fields: [idusuario], references: [idusuario], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuarios_menu_usuarios")
+
+  @@index([idusuario], map: "fk_usuarios_menu_usuarios_idx")
+  @@index([idmenu], map: "fk_usuarios_menu_menu_idx")
 }
