@@ -1,5 +1,4 @@
 import { getApiDocs } from "@/lib/swagger";
-import { Metadata } from "next";
 import ReactSwagger from "../components/swagger";
 
 export const metadata = {
