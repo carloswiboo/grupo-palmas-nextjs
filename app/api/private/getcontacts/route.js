@@ -17,6 +17,9 @@ export async function GET(request) {
         },
         status: 1,
       },
+      orderBy: {
+        created_at: "desc",
+      },
     });
 
     const resultAgencias = await prisma.agencias.findMany({
@@ -38,7 +41,7 @@ export async function GET(request) {
         nombre: element.json.nombreCliente,
         telefono: element.json.telefonoCliente,
         correo: element.json.emailCliente,
-        agencia: agencia.nombre,
+        agencia: agencia?.nombre || "N/A",
         vehiculo: element.json.model,
         creacion: element.created_at,
       };

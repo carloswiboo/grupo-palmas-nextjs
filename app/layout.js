@@ -15,7 +15,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html className="h-full bg-white" lang="en">
+    <html className="h-full bg-slate-50 dark:bg-slate-950 transition-colors duration-200" lang="en">
       <body className={`${inter.className} h-full`}>
         <Toaster />
         <UpdatedProvider>

@@ -13,6 +13,8 @@ import {
   UsersIcon,
   XMarkIcon,
   LockClosedIcon,
+  SunIcon,
+  MoonIcon,
 } from "@heroicons/react/24/outline";
 import {
   ChevronDownIcon,
@@ -72,6 +74,31 @@ export default function DashboardLayout({ children }) {
   };
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
+
+  React.useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
+      setDarkMode(true);
+      document.documentElement.classList.add("dark");
+    } else {
+      setDarkMode(false);
+      document.documentElement.classList.remove("dark");
+    }
+  }, []);
+
+  const toggleDarkMode = () => {
+    if (darkMode) {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+      setDarkMode(false);
+    } else {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+      setDarkMode(true);
+    }
+  };
 
   const [finalDataMenu, setFinalDataMenu] = React.useState([]);
 
@@ -124,6 +151,7 @@ export default function DashboardLayout({ children }) {
       "/colores",
       "/menuyfunciones",
       "/modelos",
+      "/reporteautos",
       "/reporteleadschangan",
       "/reporteleadssuzuki",
       "/usuarios"
@@ -195,13 +223,15 @@ export default function DashboardLayout({ children }) {
                       </div>
                     </Transition.Child>
                     {/* Sidebar component, swap this element with another sidebar if you like */}
-                    <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-blue-950 px-6 pb-4">
-                      <div className="flex h-16 shrink-0 items-center">
-                        <img
-                          className="h-20 w-auto mx-auto mt-2"
-                          src="https://suzukipalmas.com.mx/assets/suzukiLogo.png"
-                          alt="Your Company"
-                        />
+                    <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white dark:bg-slate-950 border-r border-gray-200 dark:border-slate-800 px-6 pb-4">
+                      <div className="flex h-20 shrink-0 items-center justify-center border-b border-gray-150 dark:border-slate-800 py-3">
+                        <div className="bg-white/95 dark:bg-white rounded-xl p-1.5 shadow-md border border-white/20 transition-all duration-300">
+                          <img
+                            className="h-11 w-auto mx-auto select-none"
+                            src="/SUZUKI_ANNIVERSARY_20_MEX.webp"
+                            alt="Suzuki Palmas 20 Aniversario"
+                          />
+                        </div>
                       </div>
                       <nav className="flex flex-1 flex-col">
                         <ul
@@ -211,27 +241,27 @@ export default function DashboardLayout({ children }) {
                           <li>
                             <ul role="list" className="-mx-2 space-y-1">
                               {finalDataMenu.map((item) => {
-                                let resultado;
-                                if (
-                                  pathname == "/dashboard" &&
-                                  item.enlace == "/"
-                                ) {
-                                  resultado = true;
-                                } else if (item.enlace !== "/") {
-                                  resultado = pathname.includes(item.enlace);
-                                }
+                                  let resultado;
+                                  if (
+                                    pathname == "/dashboard" &&
+                                    item.enlace == "/"
+                                  ) {
+                                    resultado = true;
+                                  } else if (item.enlace !== "/") {
+                                    resultado = pathname.includes(item.enlace);
+                                  }
 
-                                return (
-                                  <li key={item.idmenu}>
-                                    <Link href={"/dashboard" + item.enlace}>
-                                      <div
-                                        className={classNames(
-                                          resultado
-                                            ? "bg-indigo-700 text-white"
-                                            : "text-indigo-200 hover:text-white hover:bg-indigo-700",
-                                          "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold cursor-pointer"
-                                        )}
-                                      >
+                                  return (
+                                    <li key={item.idmenu}>
+                                      <Link href={"/dashboard" + item.enlace}>
+                                        <div
+                                          className={classNames(
+                                            resultado
+                                              ? "bg-red-800 text-white shadow-sm"
+                                              : "text-slate-600 dark:text-slate-300 hover:text-white hover:bg-red-800",
+                                            "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold cursor-pointer transition-colors duration-200"
+                                          )}
+                                        >
                                         <ConvertTextToIconComponent
                                           className={`h-6 w-6 shrink-0`}
                                           textIcon={item.icono}
@@ -245,7 +275,7 @@ export default function DashboardLayout({ children }) {
                             </ul>
                           </li>
                           <li>
-                            <div className="text-xs font-semibold leading-6 text-indigo-200">
+                            <div className="text-xs font-semibold leading-6 text-slate-400">
                               Contacto
                             </div>
                             <ul role="list" className="-mx-2 mt-2 space-y-1">
@@ -255,8 +285,8 @@ export default function DashboardLayout({ children }) {
                                     href={team.href}
                                     className={classNames(
                                       team.current
-                                        ? "bg-rose-700 text-white"
-                                        : "text-indigo-200 hover:text-white hover:bg-rose-700",
+                                        ? "bg-rose-800 text-white shadow-sm"
+                                        : "text-slate-600 hover:text-white hover:bg-rose-800",
                                       "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
                                     )}
                                   >
@@ -274,10 +304,10 @@ export default function DashboardLayout({ children }) {
                           <li className="mt-auto">
                             <a
                               href="#"
-                              className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-indigo-200 hover:bg-indigo-700 hover:text-white"
+                              className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-slate-600 hover:bg-red-800 hover:text-white transition-colors duration-200"
                             >
                               <Cog6ToothIcon
-                                className="h-6 w-6 shrink-0 text-indigo-200 group-hover:text-white"
+                                className="h-6 w-6 shrink-0 text-slate-400 group-hover:text-white transition-colors duration-200"
                                 aria-hidden="true"
                               />
                               Settings
@@ -294,14 +324,16 @@ export default function DashboardLayout({ children }) {
 
           {/* Static sidebar for desktop */}
           <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
-            {/* Sidebar component, swap this element with another sidebar if you like */}
-            <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-blue-950 px-6 pb-4">
-              <div className="flex h-16 shrink-0 items-center">
-                <img
-                  className="h-20 w-auto mx-auto mt-2"
-                  src="https://suzukipalmas.com.mx/assets/suzukiLogo.png"
-                  alt="Your Company"
-                />
+            {/* Sidebar component */}
+            <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white dark:bg-slate-950 border-r border-gray-200 dark:border-slate-800 px-6 pb-4">
+              <div className="flex h-20 shrink-0 items-center justify-center border-b border-gray-150 dark:border-slate-800 py-3">
+                <div className="bg-white/95 dark:bg-white rounded-xl p-1.5 shadow-md border border-white/20 transition-all duration-300">
+                  <img
+                    className="h-11 w-auto mx-auto select-none"
+                    src="/SUZUKI_ANNIVERSARY_20_MEX.webp"
+                    alt="Suzuki Palmas 20 Aniversario"
+                  />
+                </div>
               </div>
               <nav className="flex flex-1 flex-col">
                 <ul role="list" className="flex flex-1 flex-col gap-y-7">
@@ -321,9 +353,9 @@ export default function DashboardLayout({ children }) {
                               <div
                                 className={classNames(
                                   resultado
-                                    ? "bg-red-800 text-white"
-                                    : "text-indigo-200 hover:text-white hover:bg-red-800",
-                                  "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold cursor-pointer"
+                                    ? "bg-red-800 text-white shadow-sm"
+                                    : "text-slate-600 dark:text-slate-300 hover:text-white hover:bg-red-800",
+                                  "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold cursor-pointer transition-colors duration-200"
                                 )}
                               >
                                 <ConvertTextToIconComponent
@@ -339,7 +371,7 @@ export default function DashboardLayout({ children }) {
                     </ul>
                   </li>
                   <li>
-                    <div className="text-xs font-semibold leading-6 text-indigo-200">
+                    <div className="text-xs font-semibold leading-6 text-slate-400">
                       Información
                     </div>
                     <ul role="list" className="-mx-2 mt-2 space-y-1">
@@ -349,8 +381,8 @@ export default function DashboardLayout({ children }) {
                             href={team.href}
                             className={classNames(
                               team.current
-                                ? "bg-rose-800 text-white"
-                                : "text-indigo-200 hover:text-white hover:bg-rose-800",
+                                ? "bg-rose-800 text-white shadow-sm"
+                                : "text-slate-600 dark:text-slate-300 hover:text-white hover:bg-rose-800",
                               "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
                             )}
                           >
@@ -366,10 +398,10 @@ export default function DashboardLayout({ children }) {
                   <li className="mt-auto">
                     <a
                       href="#"
-                      className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-indigo-200 hover:bg-indigo-700 hover:text-white"
+                      className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-slate-600 dark:text-slate-300 hover:bg-red-800 hover:text-white transition-colors duration-200"
                     >
                       <Cog6ToothIcon
-                        className="h-6 w-6 shrink-0 text-indigo-200 group-hover:text-white"
+                        className="h-6 w-6 shrink-0 text-slate-400 group-hover:text-white transition-colors duration-200"
                         aria-hidden="true"
                       />
                       Configuración
@@ -381,7 +413,7 @@ export default function DashboardLayout({ children }) {
           </div>
 
           <div className="lg:pl-72">
-            <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
+            <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
               <button
                 type="button"
                 className="-m-2.5 p-2.5 text-gray-700 lg:hidden"
@@ -415,6 +447,21 @@ export default function DashboardLayout({ children }) {
                   />
                 </form>
                 <div className="flex items-center gap-x-4 lg:gap-x-6">
+                  {/* Dark Mode Toggler */}
+                  <button
+                    type="button"
+                    onClick={toggleDarkMode}
+                    className="p-2 text-gray-400 hover:text-gray-500 dark:text-slate-400 dark:hover:text-slate-200 transition-all duration-300 transform hover:scale-110 active:scale-95 focus:outline-none"
+                    title={darkMode ? "Activar Modo Claro" : "Activar Modo Oscuro"}
+                  >
+                    <span className="sr-only">Cambiar de modo</span>
+                    {darkMode ? (
+                      <SunIcon className="h-6 w-6 text-amber-500" aria-hidden="true" />
+                    ) : (
+                      <MoonIcon className="h-6 w-6 text-slate-500" aria-hidden="true" />
+                    )}
+                  </button>
+
                   <button
                     type="button"
                     className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500"
@@ -466,7 +513,7 @@ export default function DashboardLayout({ children }) {
                       leaveFrom="transform opacity-100 scale-100"
                       leaveTo="transform opacity-0 scale-95"
                     >
-                      <Menu.Items className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
+                      <Menu.Items className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white dark:bg-slate-900 py-2 shadow-lg ring-1 ring-gray-900/5 dark:ring-slate-850 focus:outline-none">
                         {userNavigation.map((item) => (
                           <Menu.Item key={item.name}>
                             {({ active }) => (

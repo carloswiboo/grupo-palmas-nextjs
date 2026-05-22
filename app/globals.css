@@ -1,3 +1,132 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ==========================================
+   GLOBAL DARK MODE OVERRIDES & THEMING
+   ========================================== */
+
+/* Transición suave para todos los cambios de modo */
+html, body, div, header, aside, nav, button, input, p, span, h1, h2, h3, h4, h5, h6, table, tr, td, th {
+  transition: background-color 0.25s ease-in-out, border-color 0.25s ease-in-out, color 0.25s ease-in-out, fill 0.25s ease-in-out, stroke 0.25s ease-in-out;
+}
+
+/* Cuerpo y fondos principales */
+.dark,
+.dark body,
+.dark main,
+.dark .lg\:pl-72 {
+  background-color: #020617 !important; /* bg-slate-950 */
+  color: #f1f5f9 !important; /* text-slate-100 */
+}
+
+/* Tarjetas y Contenedores Blancos a Oscuros */
+.dark .bg-white {
+  background-color: #0f172a !important; /* bg-slate-900 */
+  border-color: #1e293b !important; /* border-slate-800 */
+  color: #f1f5f9 !important;
+}
+
+/* Elementos de fila alternada o fondos grises alternos sólidos */
+.dark .bg-gray-50 {
+  background-color: #1e293b !important; /* bg-slate-800 */
+  color: #e2e8f0 !important;
+}
+
+/* Textos oscuros principales */
+.dark .text-gray-900, .dark .text-slate-900 {
+  color: #f8fafc !important; /* text-slate-50 */
+}
+
+/* Textos oscuros secundarios y enlaces */
+.dark .text-gray-700, .dark .text-slate-600 {
+  color: #cbd5e1 !important; /* text-slate-300 */
+}
+
+/* Textos informativos / tenues */
+.dark .text-gray-500, .dark .text-slate-400 {
+  color: #94a3b8 !important; /* text-slate-400 */
+}
+
+/* Bordes y separadores */
+.dark .border-gray-200, 
+.dark .border-gray-100,
+.dark .border-gray-150 {
+  border-color: #1e293b !important; /* border-slate-800 */
+}
+
+/* Líneas de división de tablas o listas */
+.dark .divide-gray-200 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #1e293b !important;
+}
+
+/* Asegurar que las tablas, celdas y filas en modo oscuro no tengan fondos claros o heredados indeseados */
+.dark table {
+  background-color: #0f172a !important; /* bg-slate-900 como fondo de tarjeta base */
+  border-color: #1e293b !important;
+}
+
+.dark thead {
+  background-color: #1e293b !important; /* bg-slate-800 para cabeceras de tabla */
+}
+
+.dark tbody {
+  background-color: transparent !important;
+}
+
+.dark td,
+.dark th {
+  background-color: transparent !important;
+  color: #cbd5e1 !important;
+  border-color: #1e293b !important;
+}
+
+/* Forzar fondos específicos en las celdas según la fila o celda en modo oscuro */
+.dark tr.bg-white td,
+.dark td.bg-white,
+.dark tr.bg-white th,
+.dark th.bg-white {
+  background-color: #0f172a !important;
+}
+
+.dark tr.bg-gray-50 td,
+.dark td.bg-gray-50,
+.dark tr.bg-gray-50 th,
+.dark th.bg-gray-50 {
+  background-color: #1e293b !important;
+}
+
+
+/* Inputs de formularios, fechas, búsquedas */
+.dark input[type="text"],
+.dark input[type="search"],
+.dark input[type="date"],
+.dark input[type="password"],
+.dark input[type="email"],
+.dark select,
+.dark textarea {
+  background-color: #0f172a !important;
+  border-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+.dark input::placeholder {
+  color: #64748b !important;
+}
+
+/* Etiquetas de formulario */
+.dark label {
+  color: #cbd5e1 !important;
+}
+
+/* Polaris components styling fixes for dark mode */
+.dark .Polaris-Card {
+  background-color: #0f172a !important;
+  border-color: #1e293b !important;
+  color: #f1f5f9 !important;
+}
+
+.dark .Polaris-Text--subdued {
+  color: #94a3b8 !important;
+}
+

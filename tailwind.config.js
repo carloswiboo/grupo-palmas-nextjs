@@ -1,6 +1,7 @@
 import colors from "tailwindcss/colors";
 import flowbite from "flowbite-react/tailwind";
 const config = {
+  darkMode: "class",
   content: [
     "./src/**/*.{js,ts,jsx,tsx}",
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
