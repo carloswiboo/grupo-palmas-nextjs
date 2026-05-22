@@ -105,7 +105,7 @@ const ReporteLeadsAutosScreenComponent = () => {
 
   // 1. Datos para Gráfica de Dona: Contactos por Agencia
   const agencyCounts = {};
-  data.forEach((lead) => {
+  filteredData.forEach((lead) => {
     const agency = lead.agencia || "N/A";
     agencyCounts[agency] = (agencyCounts[agency] || 0) + 1;
   });
@@ -117,11 +117,11 @@ const ReporteLeadsAutosScreenComponent = () => {
 
   // 2. Datos para Gráfica de Barras Apiladas: Modelos de Vehículos por Agencia
   const uniqueVehiclesForChart = Array.from(
-    new Set(data.map((lead) => lead.vehiculo).filter(Boolean))
+    new Set(filteredData.map((lead) => lead.vehiculo).filter(Boolean))
   );
 
   const uniqueAgenciesForChart = Array.from(
-    new Set(data.map((lead) => lead.agencia).filter(Boolean))
+    new Set(filteredData.map((lead) => lead.agencia).filter(Boolean))
   );
 
   const agencyVehicleChartData = uniqueAgenciesForChart.map((agency) => {
@@ -129,7 +129,7 @@ const ReporteLeadsAutosScreenComponent = () => {
     uniqueVehiclesForChart.forEach((v) => {
       row[v] = 0;
     });
-    data.forEach((lead) => {
+    filteredData.forEach((lead) => {
       if (lead.agencia === agency) {
         const v = lead.vehiculo;
         if (v) {

@@ -23,8 +23,8 @@ const ReporteLeadsPalmasScreenComponent = () => {
     setFechaFin(now.endOf("month").toISODate());
   }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = React.useCallback(async (e) => {
+    if (e) e.preventDefault();
 
     showLoading("Cargando Reporte");
 
@@ -49,8 +49,19 @@ const ReporteLeadsPalmasScreenComponent = () => {
         setData(sortedData);
         setSelectedAgencia("Todas");
       }
+    }).catch((err) => {
+      console.error(err);
+      hideLoading();
+      setData([]);
     });
-  };
+  }, [fechaInicio, fechaFin, showLoading, hideLoading]);
+
+  // Cargar datos por primera vez al iniciar si ya están configuradas las fechas
+  useEffect(() => {
+    if (fechaInicio && fechaFin) {
+      handleSubmit();
+    }
+  }, [fechaInicio, fechaFin, handleSubmit]);
 
   const handleDownloadExcel = () => {
     const filteredLeads = selectedAgencia === "Todas"
@@ -89,7 +100,7 @@ const ReporteLeadsPalmasScreenComponent = () => {
 
   // 1. Datos para Gráfica de Dona: Contactos por Agencia
   const agencyCounts = {};
-  data.forEach((lead) => {
+  filteredData.forEach((lead) => {
     const agency = lead.agency || lead.agencia || "N/A";
     agencyCounts[agency] = (agencyCounts[agency] || 0) + 1;
   });
@@ -101,11 +112,11 @@ const ReporteLeadsPalmasScreenComponent = () => {
 
   // 2. Datos para Gráfica de Barras Apiladas: Contactos por Agencia y Modelo de Vehículo
   const uniqueVehicles = Array.from(
-    new Set(data.map((lead) => lead.vehicle || lead.vehiculo).filter(Boolean))
+    new Set(filteredData.map((lead) => lead.vehicle || lead.vehiculo).filter(Boolean))
   );
 
   const uniqueAgencies = Array.from(
-    new Set(data.map((lead) => lead.agency || lead.agencia).filter(Boolean))
+    new Set(filteredData.map((lead) => lead.agency || lead.agencia).filter(Boolean))
   );
 
   const agencyVehicleChartData = uniqueAgencies.map((agency) => {
@@ -113,7 +124,7 @@ const ReporteLeadsPalmasScreenComponent = () => {
     uniqueVehicles.forEach((v) => {
       row[v] = 0;
     });
-    data.forEach((lead) => {
+    filteredData.forEach((lead) => {
       const leadAgency = lead.agency || lead.agencia;
       if (leadAgency === agency) {
         const v = lead.vehicle || lead.vehiculo;
@@ -124,6 +135,20 @@ const ReporteLeadsPalmasScreenComponent = () => {
     });
     return row;
   });
+
+  // 3. Datos para Gráfica de Dona: Vehículos más comentados / cotizados
+  const vehicleCounts = {};
+  filteredData.forEach((lead) => {
+    const vehicle = lead.vehicle || lead.vehiculo || "No especificado";
+    vehicleCounts[vehicle] = (vehicleCounts[vehicle] || 0) + 1;
+  });
+
+  const vehicleChartData = Object.keys(vehicleCounts)
+    .map((vehicle) => ({
+      name: vehicle,
+      value: vehicleCounts[vehicle],
+    }))
+    .sort((a, b) => b.value - a.value);
 
   return (
     <>
@@ -249,8 +274,8 @@ const ReporteLeadsPalmasScreenComponent = () => {
 
             {/* Panel de Gráficas */}
             {showCharts && (
-              <div className="mb-6 transition-all duration-300 ease-in-out">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="mb-6 transition-all duration-300 ease-in-out space-y-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Tarjeta 1: Distribución por Agencia */}
                   <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800/80 shadow-md rounded-xl p-5 flex flex-col justify-between min-h-[350px]">
                     <div>
@@ -262,7 +287,7 @@ const ReporteLeadsPalmasScreenComponent = () => {
                       </p>
                     </div>
                     {agencyChartData.length > 0 ? (
-                      <div className="flex flex-col sm:flex-row lg:flex-col xl:flex-row items-center justify-around gap-4 my-auto">
+                      <div className="flex flex-col sm:flex-row items-center justify-around gap-4 my-auto">
                         <DonutChart
                           data={agencyChartData}
                           category="value"
@@ -287,36 +312,72 @@ const ReporteLeadsPalmasScreenComponent = () => {
                     )}
                   </div>
 
-                  {/* Tarjeta 2: Interés de Vehículos por Agencia */}
-                  <div className="lg:col-span-2 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800/80 shadow-md rounded-xl p-5 flex flex-col justify-between min-h-[350px]">
+                  {/* Tarjeta 2: Vehículos más Cotizados (El auto más comentado) */}
+                  <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800/80 shadow-md rounded-xl p-5 flex flex-col justify-between min-h-[350px]">
                     <div>
                       <h3 className="text-sm font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-1">
-                        Modelos de Interés por Agencia
+                        Vehículos más Cotizados
                       </h3>
                       <p className="text-xs text-gray-500 dark:text-slate-400 mb-4">
-                        Breakdown acumulado de modelos consultados por sucursal.
+                        Modelos de autos con mayor volumen de interés de clientes en el periodo.
                       </p>
                     </div>
-                    {agencyVehicleChartData.length > 0 && uniqueVehicles.length > 0 ? (
-                      <div className="flex-1 min-h-[220px]">
-                        <BarChart
-                          className="h-60 mt-2"
-                          data={agencyVehicleChartData}
-                          index="agency"
-                          categories={uniqueVehicles}
-                          colors={["blue", "teal", "amber", "rose", "emerald", "violet", "indigo", "cyan", "lime", "orange", "pink", "sky", "fuchsia", "purple"]}
-                          valueFormatter={(number) => `${number} leads`}
-                          yAxisWidth={40}
-                          stack={true}
+                    {vehicleChartData.length > 0 ? (
+                      <div className="flex flex-col sm:flex-row items-center justify-around gap-4 my-auto">
+                        <DonutChart
+                          data={vehicleChartData}
+                          category="value"
+                          index="name"
+                          valueFormatter={(number) => `${number} cotizaciones`}
+                          colors={["blue", "teal", "amber", "rose", "emerald", "violet", "indigo", "cyan", "lime", "pink"]}
+                          className="w-36 h-36 shrink-0"
                           showAnimation={true}
                         />
+                        <div className="flex flex-col gap-1 max-w-full overflow-hidden">
+                          <Legend
+                            categories={vehicleChartData.map(item => item.name)}
+                            colors={["blue", "teal", "amber", "rose", "emerald", "violet", "indigo", "cyan", "lime", "pink"]}
+                            className="max-w-xs"
+                          />
+                        </div>
                       </div>
                     ) : (
                       <div className="flex items-center justify-center h-48 text-sm text-gray-400">
-                        Sin datos de vehículos de interés
+                        Sin datos de vehículos cotizados
                       </div>
                     )}
                   </div>
+                </div>
+
+                {/* Tarjeta 3: Modelos de Interés por Agencia */}
+                <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800/80 shadow-md rounded-xl p-5 flex flex-col justify-between min-h-[350px]">
+                  <div>
+                    <h3 className="text-sm font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-1">
+                      Modelos de Interés por Agencia
+                    </h3>
+                    <p className="text-xs text-gray-500 dark:text-slate-400 mb-4">
+                      Breakdown acumulado de modelos consultados por sucursal.
+                    </p>
+                  </div>
+                  {agencyVehicleChartData.length > 0 && uniqueVehicles.length > 0 ? (
+                    <div className="flex-1 min-h-[220px]">
+                      <BarChart
+                        className="h-60 mt-2"
+                        data={agencyVehicleChartData}
+                        index="agency"
+                        categories={uniqueVehicles}
+                        colors={["blue", "teal", "amber", "rose", "emerald", "violet", "indigo", "cyan", "lime", "orange", "pink", "sky", "fuchsia", "purple"]}
+                        valueFormatter={(number) => `${number} leads`}
+                        yAxisWidth={40}
+                        stack={true}
+                        showAnimation={true}
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center h-48 text-sm text-gray-400">
+                      Sin datos de vehículos de interés
+                    </div>
+                  )}
                 </div>
               </div>
             )}
