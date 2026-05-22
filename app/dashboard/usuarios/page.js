@@ -2,6 +2,7 @@
 
 import ContentUsuariosComponent from "@/app/components/ClientesComponents/ContentUsuariosComponent/ContentUsuariosComponent";
 import CrudUsuariosComponent from "@/app/components/ClientesComponents/CrudUsuariosComponent/CrudUsuariosComponent";
+import CrudActualizarContrasenaUsuariosComponent from "@/app/components/ClientesComponents/CrudActualizarContrasenaUsuariosComponent/CrudActualizarContrasenaUsuariosComponent";
 import TitleDashboardComponent from "@/app/components/TitleDashboardComponent/TitleDashboardComponent";
 import { useCrudContext } from "@/context/CrudContext";
 import { useLoading } from "@/context/LoadingContext";
@@ -39,7 +40,8 @@ export default function Page({ params, searchParams }) {
 
       <ContentUsuariosComponent finalData={finalData} />
 
-      {crud.type != null && <CrudUsuariosComponent />}
+      {crud.type === "create" && <CrudUsuariosComponent />}
+      {crud.type === "updatePassword" && <CrudActualizarContrasenaUsuariosComponent />}
     </div>
   );
 }

@@ -9,7 +9,7 @@ const ConvertTextToIconComponent = (props) => {
   const IconComponent = icons[props.textIcon];
   // Verifica si el ícono es válido antes de renderizarlo
   if (!IconComponent) {
-    return <div>Ícono no válido</div>;
+    return null;
   }
   return <IconComponent className={props.className} />;
 };

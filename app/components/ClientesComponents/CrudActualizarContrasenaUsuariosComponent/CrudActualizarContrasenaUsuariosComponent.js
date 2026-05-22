@@ -1,313 +1,198 @@
 "use client";
 
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import {
-  LinkIcon,
-  PlusIcon,
-  QuestionMarkCircleIcon,
-} from "@heroicons/react/20/solid";
 import { useCrudContext } from "@/context/CrudContext";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useLoading } from "@/context/LoadingContext";
 import toast from "react-hot-toast";
 import { useUpdatedContext } from "@/context/UpdateContext";
-import { AxiosAPIPost } from "@/lib/PalmasAPIMethods/AxiosAPIPost";
-import { AxiosAPIPut } from "@/lib/PalmasAPIMethods/AxiosAPIPut";
-import { AxiosAPIDelete } from "@/lib/PalmasAPIMethods/AxiosAPIDelete";
-
-let nombreVista = "Usuarios";
-let esMasculino = true;
+import axios from "axios";
 
 const validationSchema = Yup.object({
-  departamento: Yup.string().required("obligatorio"),
-  descripcion: Yup.string(),
+  contrasena: Yup.string()
+    .min(6, "La contraseña debe tener al menos 6 caracteres")
+    .required("La nueva contraseña es obligatoria"),
+  confirmContrasena: Yup.string()
+    .oneOf([Yup.ref("contrasena"), null], "Las contraseñas deben coincidir")
+    .required("Confirma la nueva contraseña"),
 });
 
-const CrudActualizarContrasenaUsuariosComponent = (props) => {
+const CrudActualizarContrasenaUsuariosComponent = () => {
   const [open, setOpen] = useState(true);
   const { crud, setCrud } = useCrudContext();
-  const [disabled, setDisabled] = useState(false);
-  const [colorClases, setColorClases] = useState("");
-
-  const { showLoading, hideLoading, isLoading } = useLoading();
-
+  const { showLoading, hideLoading } = useLoading();
   const { number, setNumber } = useUpdatedContext();
 
-  React.useEffect(() => {
-    if (crud.type == "create") {
-      setColorClases(
-        "bg-green-500 hover:bg-green-500 focus-visible:outline-green-600"
-      );
-    } else if (crud.type == "update") {
-      setColorClases(
-        "bg-blue-500 hover:bg-blue-500 focus-visible:outline-blue-600"
-      );
-    } else if (crud.type == "delete") {
-      setColorClases(
-        "bg-red-500 hover:bg-red-500 focus-visible:outline-red-600"
-      );
-    } else {
-      setColorClases("bg-orange-500");
-    }
-  }, [crud]);
+  const user = crud.data || {};
 
-  //Formik
   const formik = useFormik({
     initialValues: {
-      departamento:
-        crud.type == "update" || crud.type == "delete"
-          ? crud.data.departamento
-          : "",
-      descripcion:
-        crud.type == "update" || crud.type == "delete"
-          ? crud.data.descripcion
-          : "",
+      contrasena: "",
+      confirmContrasena: "",
     },
     validationSchema,
-    onSubmit: (values) => {
-      showLoading();
-
-      if (crud.type == "create") {
-        let valuesCreate = {
-          departamento: values.departamento,
-        };
-
-        AxiosAPIPost("empleados/cDepartamento/nuevo/", {}, values).then(
-          (response) => {
-            if (response.status === 200) {
-              toast.success(
-                `${nombreVista} ${
-                  esMasculino ? "creado" : "creada"
-                } correctamente`
-              );
-              setNumber(number + 1);
-              setCrud({ type: null, data: null }); // Cierra el diálogo después de enviar
-              hideLoading();
-            } else {
-              toast.error(` Ocurrió un error al crear ${nombreVista}`);
-              setNumber(number + 1);
-              setCrud({ type: null, data: null });
-              hideLoading();
-            }
-          }
-        );
-      } else if (crud.type == "update") {
-        let valuesCreate = {
-          departamento: values.departamento,
-        };
-
-        AxiosAPIPut(
-          "empleados/cDepartamento/editar/" + crud.data.id,
-          {},
-          values
-        ).then((response) => {
-          if (response.status === 200) {
-            toast.success(
-              `${nombreVista} ${
-                esMasculino ? "actualizado" : "actualizada"
-              } correctamente`
-            );
-            setNumber(number + 1);
-            setCrud({ type: null, data: null }); // Cierra el diálogo después de enviar
-            hideLoading();
-          } else {
-            toast.error(` Ocurrió un error al actualizar ${nombreVista}`);
-            setNumber(number + 1);
-            setCrud({ type: null, data: null });
-            hideLoading();
-          }
-        });
-      } else if (crud.type == "delete") {
-        AxiosAPIDelete(
-          "empleados/cDepartamento/eliminar/" + crud.data.id,
-          {},
-          {}
-        ).then((response) => {
-          if (response.status === 200) {
-            toast.success(
-              `${nombreVista} ${
-                esMasculino ? "eliminado" : "eliminada"
-              } correctamente`
-            );
-            setNumber(number + 1);
-            setCrud({ type: null, data: null }); // Cierra el diálogo después de enviar
-            hideLoading();
-          } else {
-            setNumber(number + 1);
-            toast.error(` Ocurrió un error al eliminar ${nombreVista}`);
-            setCrud({ type: null, data: null });
-            hideLoading();
-          }
-        });
-      } else {
-        setCrud({ type: null, data: null }); // Cierra el diálogo después de enviar
-        console.log("Error: Tipo de operación no definido");
+    onSubmit: async (values) => {
+      if (!user.idusuario) {
+        toast.error("ID de usuario no válido");
+        return;
       }
 
-      console.log("Formulario enviado con valores:", values);
+      showLoading("Actualizando contraseña...");
+      try {
+        const response = await axios.patch("/api/private/users/updatepassword", {
+          idusuario: user.idusuario,
+          contrasena: values.contrasena,
+        });
+
+        if (response.status === 200) {
+          toast.success("Contraseña actualizada correctamente");
+          setNumber(number + 1);
+          setCrud({ type: null, data: null });
+        } else {
+          toast.error("Ocurrió un error al actualizar la contraseña");
+        }
+      } catch (error) {
+        toast.error(error.response?.data?.error || "Error al actualizar la contraseña");
+        console.error(error);
+      } finally {
+        hideLoading();
+      }
     },
   });
 
+  const handleClose = () => {
+    setCrud({ type: null, data: null });
+  };
+
   return (
-    <>
-      <Dialog
-        open={open}
-        onClose={() => setCrud({ type: null, data: null })}
-        className="relative z-50"
-      >
-        <div className="fixed inset-0" />
-        <div className="fixed inset-0 overflow-hidden">
-          <div className="absolute inset-0 overflow-hidden">
-            <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
-              <DialogPanel
-                transition
-                className="pointer-events-auto w-screen max-w-2xl transform transition duration-500 ease-in-out data-[closed]:translate-x-full sm:duration-700"
+    <Dialog open={open} onClose={handleClose} className="relative z-50">
+      {/* Backdrop */}
+      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity" />
+
+      <div className="fixed inset-0 overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
+            <DialogPanel
+              transition
+              className="pointer-events-auto w-screen max-w-md transform transition duration-500 ease-in-out data-[closed]:translate-x-full sm:duration-700"
+            >
+              <form
+                onSubmit={formik.handleSubmit}
+                className="flex h-full flex-col bg-white dark:bg-gray-900 shadow-2xl border-l border-gray-150 dark:border-gray-800"
               >
-                <form
-                  onSubmit={formik.handleSubmit}
-                  className="flex h-full flex-col overflow-y-scroll bg-white dark:bg-gray-800 shadow-xl"
-                >
-                  <div className="flex-1">
-                    {/* Header */}
-                    <div className="bg-gray-50 dark:bg-gray-900 px-4 py-6 sm:px-6">
-                      <div className="flex items-start justify-between space-x-3">
-                        <div className="space-y-1">
-                          <DialogTitle className="text-base font-semibold text-gray-900 dark:text-white ">
-                            {crud.type == "create" && "Crear"}
-                            {crud.type == "update" && "Actualizar"}
-                            {crud.type == "delete" && "Eliminar"} {nombreVista}
-                          </DialogTitle>
-                          <p className="text-xs text-gray-500">
-                            Ingresa la información para {nombreVista}
-                          </p>
-                        </div>
-                        <div className="flex h-7 items-center">
-                          <button
-                            type="button"
-                            onClick={() => setCrud({ type: null, data: null })}
-                            className="relative text-gray-400 hover:text-gray-500"
-                          >
-                            <span className="absolute -inset-2.5" />
-                            <span className="sr-only">Close panel</span>
-                            <XMarkIcon
-                              aria-hidden="true"
-                              className="size-6 text-red-500"
-                            />
-                          </button>
-                        </div>
-                      </div>
+                {/* Header */}
+                <div className="bg-gradient-to-r from-gray-750 to-gray-700 px-6 py-6 sm:px-8 shadow-sm">
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-1 text-white">
+                      <DialogTitle className="text-xl font-bold tracking-tight">
+                        Cambiar Contraseña
+                      </DialogTitle>
+                      <p className="text-xs text-gray-300 opacity-90">
+                        Establece una nueva clave de acceso para el usuario.
+                      </p>
                     </div>
-
-                    {crud.type == "delete" && (
-                      <div className="space-y-2 px-4 sm:grid sm:grid-cols-1 sm:gap-4 sm:space-y-0 sm:px-6 sm:py-5 items-center">
-                        <div
-                          class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-                          role="alert"
-                        >
-                          <span class="font-medium">Alerta!</span> Confirma la
-                          eliminación del departamento{" "}
-                          <strong>{formik.values.departamento}</strong>
-                        </div>
-                      </div>
-                    )}
-
-                    {crud.type != "delete" && (
-                      <div className="space-y-6 py-6 sm:space-y-0 sm:divide-y sm:divide-gray-100 dark:divide-none sm:py-0">
-                        <div className="space-y-2 px-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:space-y-0 sm:px-6 sm:py-5">
-                          <div>
-                            <label
-                              htmlFor="departamento"
-                              className="block text-sm/6 font-medium text-gray-900 dark:text-gray-300 sm:mt-1.5"
-                            >
-                              Nombre Departamento:
-                            </label>
-                          </div>
-                          <div className="sm:col-span-2">
-                            <input
-                              id="departamento"
-                              name="departamento"
-                              type="text"
-                              disabled={disabled}
-                              onChange={formik.handleChange}
-                              onBlur={formik.handleBlur}
-                              value={formik.values.departamento}
-                              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            />
-                            {formik.touched.departamento &&
-                              formik.errors.departamento && (
-                                <p className="text-xs ml-1 mt-2 text-red-500">
-                                  {formik.errors.departamento}
-                                </p>
-                              )}
-                          </div>
-                        </div>
-                        <div className="space-y-2 px-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:space-y-0 sm:px-6 sm:py-5">
-                          <div>
-                            <label
-                              htmlFor="descripcion"
-                              className="block text-sm/6 font-medium text-gray-900 dark:text-gray-300 sm:mt-1.5"
-                            >
-                              Descripción Departamento:
-                            </label>
-                          </div>
-                          <div className="sm:col-span-2">
-                            <textarea
-                              id="descripcion"
-                              name="descripcion"
-                              multiple={true}
-                              type="text"
-                              disabled={disabled}
-                              onChange={formik.handleChange}
-                              onBlur={formik.handleBlur}
-                              value={formik.values.descripcion}
-                              rows={4}
-                              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            />
-                            {formik.touched.descripcion &&
-                              formik.errors.descripcion && (
-                                <p className="text-xs ml-1 mt-2 text-red-500">
-                                  {formik.errors.descripcion}
-                                </p>
-                              )}
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Divider container */}
-                  </div>
-
-                  {/* Action buttons */}
-                  <div className="shrink-0 border-t border-gray-200 px-4 py-5 sm:px-6">
-                    <div className="flex justify-end space-x-3">
+                    <div className="flex h-7 items-center">
                       <button
                         type="button"
-                        onClick={() => setCrud({ type: null, data: null })}
-                        className="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                        onClick={handleClose}
+                        className="relative text-gray-300 hover:text-white rounded-md focus:outline-none transition"
                       >
-                        Cancelar
-                      </button>
-                      <button
-                        type="submit"
-                        className={`inline-flex justify-center rounded-md  ${colorClases} px-3 py-2 text-sm font-semibold text-white shadow-sm  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 `}
-                      >
-                        {crud.type == "create" && "Crear"}
-                        {crud.type == "update" && "Actualizar"}
-                        {crud.type == "delete" && "Eliminar"}
+                        <span className="sr-only">Cerrar</span>
+                        <XMarkIcon aria-hidden="true" className="h-6 w-6" />
                       </button>
                     </div>
                   </div>
-                </form>
-              </DialogPanel>
-            </div>
+                </div>
+
+                {/* Form Body */}
+                <div className="flex-1 overflow-y-auto px-6 py-6 sm:px-8 space-y-6">
+                  {/* User Profile Card Hint */}
+                  <div className="p-4 bg-gray-50 dark:bg-gray-850 rounded-xl border border-gray-100 dark:border-gray-800 flex flex-col gap-1 shadow-sm">
+                    <span className="text-xs text-gray-400 font-bold uppercase tracking-wider">
+                      Usuario Seleccionado
+                    </span>
+                    <span className="text-md font-bold text-gray-700 dark:text-gray-200">
+                      {user.nombre} {user.apellidopaterno} {user.apellidomaterno}
+                    </span>
+                    <span className="text-xs text-gray-500">{user.email}</span>
+                  </div>
+
+                  {/* Nueva Contraseña */}
+                  <div className="space-y-1.5">
+                    <label
+                      htmlFor="contrasena"
+                      className="block text-sm font-bold text-gray-700 dark:text-gray-300"
+                    >
+                      Nueva Contraseña:
+                    </label>
+                    <input
+                      id="contrasena"
+                      name="contrasena"
+                      type="password"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.contrasena}
+                      placeholder="••••••••"
+                      className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-750 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-2 focus:ring-red-500/20 focus:border-red-500 block p-3 transition shadow-sm"
+                    />
+                    {formik.touched.contrasena && formik.errors.contrasena && (
+                      <p className="text-xs text-red-500 font-semibold mt-1">
+                        {formik.errors.contrasena}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Confirmar Contraseña */}
+                  <div className="space-y-1.5">
+                    <label
+                      htmlFor="confirmContrasena"
+                      className="block text-sm font-bold text-gray-700 dark:text-gray-300"
+                    >
+                      Confirmar Nueva Contraseña:
+                    </label>
+                    <input
+                      id="confirmContrasena"
+                      name="confirmContrasena"
+                      type="password"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.confirmContrasena}
+                      placeholder="••••••••"
+                      className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-750 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-2 focus:ring-red-500/20 focus:border-red-500 block p-3 transition shadow-sm"
+                    />
+                    {formik.touched.confirmContrasena && formik.errors.confirmContrasena && (
+                      <p className="text-xs text-red-500 font-semibold mt-1">
+                        {formik.errors.confirmContrasena}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Footer Buttons */}
+                <div className="shrink-0 border-t border-gray-250 dark:border-gray-850 px-6 py-5 sm:px-8 bg-gray-50 dark:bg-gray-900/50 flex justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={handleClose}
+                    className="rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-850 px-4 py-2.5 text-sm font-bold text-gray-700 dark:text-gray-300 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    className="rounded-lg bg-gray-800 hover:bg-gray-850 dark:bg-red-600 dark:hover:bg-red-700 px-5 py-2.5 text-sm font-bold text-white shadow-sm hover:shadow transition"
+                  >
+                    Actualizar
+                  </button>
+                </div>
+              </form>
+            </DialogPanel>
           </div>
         </div>
-      </Dialog>
-    </>
+      </div>
+    </Dialog>
   );
 };
 

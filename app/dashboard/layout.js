@@ -53,20 +53,6 @@ const teams = [
     initial: "TI",
     current: false,
   },
-  {
-    id: 2,
-    name: "Contacto Marketing",
-    href: "tel:+524771137983",
-    initial: "MKT",
-    current: false,
-  },
-  {
-    id: 2,
-    name: "Contacto Ad's",
-    href: "tel:+524776001623",
-    initial: "AD'S",
-    current: false,
-  },
 ];
 const userNavigation = [
   { name: "Mi perfil", href: "#" },
@@ -79,6 +65,11 @@ function classNames(...classes) {
 
 export default function DashboardLayout({ children }) {
   const pathname = usePathname();
+
+  const handleLogout = () => {
+    Cookies.remove(process.env.NEXT_PUBLIC_COOKIE_NAME);
+    window.location.href = "/login";
+  };
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -119,7 +110,7 @@ export default function DashboardLayout({ children }) {
     }
 
     const primarySegment = "/" + subpath.split("/").filter(Boolean)[0];
-    
+
     const isAllowed = finalDataMenu.some(item => {
       if (!item.enlace) return false;
       const menuSegment = "/" + item.enlace.split("/").filter(Boolean)[0];
@@ -479,15 +470,16 @@ export default function DashboardLayout({ children }) {
                         {userNavigation.map((item) => (
                           <Menu.Item key={item.name}>
                             {({ active }) => (
-                              <a
-                                href={item.href}
+                              <button
+                                type="button"
+                                onClick={item.name === "Cerrar Sesión" ? handleLogout : undefined}
                                 className={classNames(
                                   active ? "bg-gray-50" : "",
-                                  "block px-3 py-1 text-sm leading-6 text-gray-900"
+                                  "block w-full text-left px-3 py-1 text-sm leading-6 text-gray-900"
                                 )}
                               >
                                 {item.name}
-                              </a>
+                              </button>
                             )}
                           </Menu.Item>
                         ))}

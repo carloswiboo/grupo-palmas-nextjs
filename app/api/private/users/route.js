@@ -105,7 +105,6 @@ export async function GET(request) {
  */
 export async function POST(request) {
   var resultado = await request.json();
-  debugger;
   try {
     if (
       !resultado.nombre ||
@@ -116,8 +115,6 @@ export async function POST(request) {
     ) {
       throw new Error("Ingresa los campos necesarios");
     }
-
-    debugger;
 
     const resultCorreos = await prisma.usuarios.findMany({
       where: {
@@ -130,7 +127,7 @@ export async function POST(request) {
         "Ya existe un usuario creado con el correo proporcionado, verifica"
       );
     } else {
-      resultado.status = 0;
+      resultado.status = 1; // Active by default so they appear in dashboard
       resultado.contrasena = await hashPassword(resultado.contrasena);
       resultado.activacion = uuidv4();
 
@@ -138,22 +135,29 @@ export async function POST(request) {
         data: resultado,
       });
 
-      const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: process.env.SMTP_PORT,
-        secure: false,
-        auth: {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASSWORD,
-        },
-      });
+      // Safe SMTP transport so failures in email sending do not break registration
+      try {
+        if (process.env.SMTP_HOST && process.env.SMTP_USER) {
+          const transporter = nodemailer.createTransport({
+            host: process.env.SMTP_HOST,
+            port: parseInt(process.env.SMTP_PORT || "587", 10),
+            secure: false,
+            auth: {
+              user: process.env.SMTP_USER,
+              pass: process.env.SMTP_PASSWORD,
+            },
+          });
 
-      await transporter.sendMail({
-        from: "Help Desk Wiboo <notificaciones@gironafilmfestival.com>",
-        to: resultCreacionUsuario.email,
-        subject: "Notificación de creación de cuenta",
-        html: `Hola, te informamos que se ha creado tu cuenta para acceder al sistema del Grupo Palmas </br> Necesitas activar tu cuenta, para hacerlo te invitamos a seguir el siguiente enlace: <a href="${process.env.FINAL_URL}activarcuenta/${resultCreacionUsuario.activacion}">${process.env.FINAL_URL}activarcuenta/${resultCreacionUsuario.activacion}</a>`,
-      });
+          await transporter.sendMail({
+            from: "Help Desk Wiboo <notificaciones@gironafilmfestival.com>",
+            to: resultCreacionUsuario.email,
+            subject: "Notificación de creación de cuenta",
+            html: `Hola, te informamos que se ha creado tu cuenta para acceder al sistema del Grupo Palmas. Tu cuenta ya está activa y puedes iniciar sesión directamente.`,
+          });
+        }
+      } catch (mailError) {
+        console.warn("SMTP email notification failed to send:", mailError.message);
+      }
 
       return NextResponse.json(resultCreacionUsuario, { status: 200 });
     }

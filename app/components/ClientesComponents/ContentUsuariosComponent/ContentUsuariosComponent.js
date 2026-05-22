@@ -7,9 +7,11 @@ import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 import ConvertTextToIconComponent from "@/components/ConvertTextToIconComponent";
+import { useCrudContext } from "@/context/CrudContext";
 
 const ContentUsuariosComponent = ({ finalData }) => {
   const [localUsers, setLocalUsers] = useState(finalData);
+  const { setCrud } = useCrudContext();
   const [currentUser, setCurrentUser] = useState(null);
   const [availableMenus, setAvailableMenus] = useState([]);
   const [userPermissions, setUserPermissions] = useState({}); // { [idusuario]: [idmenu, idmenu, ...] }
@@ -210,6 +212,7 @@ const ContentUsuariosComponent = ({ finalData }) => {
             <div className="mt-4 flex gap-3">
               <button
                 type="button"
+                onClick={() => setCrud({ type: "updatePassword", data: user })}
                 className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-white px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50 border border-gray-200 transition"
               >
                 <FcKey className="h-4 w-4" />
