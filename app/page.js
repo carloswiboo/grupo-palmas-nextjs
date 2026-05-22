@@ -17,7 +17,7 @@ const Home = () => {
     >
       <div className="text-center">
         <h1 className="text-white text-5xl font-bold mb-4">Bienvenido a Suzuki Palmas API</h1>
-        <p className="text-white text-xl mb-4">Digitalia - Wiboo</p>
+        <p className="text-white text-xl mb-4">Wiboo</p>
         <p className="text-white text-sm">&copy; {anio}</p>
       </div>
     </div>

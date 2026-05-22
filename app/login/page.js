@@ -85,7 +85,7 @@ const LoginScreenComponent = () => {
               Inicio de Sesión
             </h2>
             <h4 className="mt-1 text-center text-sm font-extralight tracking-tight text-gray-900">
-              Administración Wiboo - Digitalia
+              Administración Wiboo
             </h4>
           </div>
           <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">

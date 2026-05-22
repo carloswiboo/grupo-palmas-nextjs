@@ -94,7 +94,7 @@ export async function PATCH(request) {
     });
 
     await transporter.sendMail({
-      from: "Help Desk Wiboo - Digitalia <carlos@wiboo.com.mx>",
+      from: "Help Desk Wiboo - <carlos@wiboo.com.mx>",
       to: consulta.email,
       subject: "Notificación de modificación de contraseña",
       html: `Hola, te informamos que se ha modificado la contraseña para acceder al sistema del Grupo Palmas. Si no fuiste tú, por favor, contacta al administrador del sistema`,
