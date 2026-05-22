@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import { useLoading } from "@/context/LoadingContext";
 import LoadingDataComponent from "@/app/components/LoadingDataComponent/LoadingDataComponent";
 import * as XLSX from 'xlsx';
-import { Card, DonutChart, BarChart, Legend } from "@tremor/react";
+import { Card, DonutChart, BarChart, Legend, AreaChart } from "@tremor/react";
 
 const ReporteLeadsPalmasScreenComponent = () => {
   const [fechaInicio, setFechaInicio] = useState("");
@@ -150,6 +150,52 @@ const ReporteLeadsPalmasScreenComponent = () => {
     }))
     .sort((a, b) => b.value - a.value);
 
+  // 4. Datos para Gráfica de Serie Temporal: Comportamiento Diario por Agencia
+  const dailyCounts = {};
+  filteredData.forEach((lead) => {
+    const dateStr = DateTime.fromISO(lead.creacion || lead.created_at || lead.date)
+      .setZone("America/Mexico_City")
+      .toISODate();
+    const agency = lead.agency || lead.agencia || "N/A";
+    if (!dailyCounts[dateStr]) {
+      dailyCounts[dateStr] = {};
+    }
+    dailyCounts[dateStr][agency] = (dailyCounts[dateStr][agency] || 0) + 1;
+  });
+
+  const dailyChartData = [];
+  let totalDaysInRange = 0;
+  if (fechaInicio && fechaFin) {
+    let current = DateTime.fromISO(fechaInicio);
+    const end = DateTime.fromISO(fechaFin);
+    while (current <= end) {
+      const dateStr = current.toISODate();
+      const row = { date: current.toLocaleString({ day: 'numeric', month: 'short' }) };
+      uniqueAgencies.forEach((agency) => {
+        row[agency] = dailyCounts[dateStr]?.[agency] || 0;
+      });
+      dailyChartData.push(row);
+      current = current.plus({ days: 1 });
+      totalDaysInRange++;
+    }
+  }
+
+  // 5. Promedios Diarios: Total y por Agencia
+  const totalDailyAvg = totalDaysInRange > 0
+    ? (filteredData.length / totalDaysInRange)
+    : 0;
+
+  const agencyDailyAvgs = uniqueAgencies.map((agency) => {
+    const agencyTotal = filteredData.filter(
+      (lead) => (lead.agency || lead.agencia) === agency
+    ).length;
+    return {
+      name: agency,
+      total: agencyTotal,
+      avg: totalDaysInRange > 0 ? agencyTotal / totalDaysInRange : 0,
+    };
+  }).sort((a, b) => b.avg - a.avg);
+
   return (
     <>
       {isLoading && <LoadingDataComponent />}
@@ -275,6 +321,70 @@ const ReporteLeadsPalmasScreenComponent = () => {
             {/* Panel de Gráficas */}
             {showCharts && (
               <div className="mb-6 transition-all duration-300 ease-in-out space-y-6">
+
+                {/* Card de Promedios Diarios — compacta y discreta */}
+                {filteredData.length > 0 && totalDaysInRange > 0 && (
+                  <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800/80 shadow-md rounded-xl p-4">
+                    <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+                      {/* Título + total */}
+                      <div className="flex items-center gap-3 shrink-0">
+                        <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900/50 flex items-center justify-center shrink-0">
+                          <svg className="w-4 h-4 text-blue-500 dark:text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" />
+                          </svg>
+                        </div>
+                        <div>
+                          <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-slate-500">Promedio diario</p>
+                          <div className="flex items-baseline gap-1">
+                            <span className="text-xl font-extrabold text-gray-900 dark:text-slate-100 leading-none">{totalDailyAvg.toFixed(1)}</span>
+                            <span className="text-xs text-gray-400 dark:text-slate-500">leads/día</span>
+                          </div>
+                          <p className="text-[10px] text-gray-400 dark:text-slate-600 mt-0.5">{totalDaysInRange} días analizados</p>
+                        </div>
+                      </div>
+
+                      {/* Divisor vertical */}
+                      <div className="hidden sm:block w-px h-10 bg-gray-200 dark:bg-slate-800 shrink-0" />
+
+                      {/* Agencias en fila compacta */}
+                      {agencyDailyAvgs.length > 0 && (
+                        <div className="flex flex-wrap items-center gap-3 flex-1">
+                          {agencyDailyAvgs.map((item, idx) => {
+                            const dotColors = [
+                              "bg-blue-500", "bg-cyan-500", "bg-emerald-500",
+                              "bg-amber-500", "bg-rose-500", "bg-violet-500", "bg-teal-500"
+                            ];
+                            const barColors = [
+                              "bg-blue-400", "bg-cyan-400", "bg-emerald-400",
+                              "bg-amber-400", "bg-rose-400", "bg-violet-400", "bg-teal-400"
+                            ];
+                            const percentage = filteredData.length > 0
+                              ? Math.round((item.total / filteredData.length) * 100)
+                              : 0;
+                            const dot = dotColors[idx % dotColors.length];
+                            const bar = barColors[idx % barColors.length];
+                            return (
+                              <div key={item.name} className="flex items-center gap-2.5 bg-gray-50 dark:bg-slate-800/50 border border-gray-100 dark:border-slate-800 rounded-lg px-3 py-2 min-w-[160px]">
+                                <span className={`w-2 h-2 rounded-full shrink-0 ${dot}`} />
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-[10px] font-semibold text-gray-500 dark:text-slate-400 truncate leading-tight">{item.name}</p>
+                                  <div className="flex items-baseline justify-between gap-1 mt-0.5">
+                                    <span className="text-sm font-bold text-gray-800 dark:text-slate-200">{item.avg.toFixed(1)}<span className="text-[10px] font-normal text-gray-400 dark:text-slate-500 ml-0.5">leads/día</span></span>
+                                    <span className="text-[10px] font-semibold text-gray-400 dark:text-slate-500 shrink-0">{percentage}%</span>
+                                  </div>
+                                  <div className="mt-1 h-1 rounded-full bg-gray-200 dark:bg-slate-700 overflow-hidden">
+                                    <div className={`h-full rounded-full ${bar} transition-all duration-500`} style={{ width: `${percentage}%` }} />
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Tarjeta 1: Distribución por Agencia */}
                   <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800/80 shadow-md rounded-xl p-5 flex flex-col justify-between min-h-[350px]">
@@ -347,6 +457,37 @@ const ReporteLeadsPalmasScreenComponent = () => {
                       </div>
                     )}
                   </div>
+                </div>
+
+                {/* Tarjeta: Comportamiento Diario de Leads por Agencia */}
+                <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800/80 shadow-md rounded-xl p-5 flex flex-col justify-between min-h-[380px]">
+                  <div>
+                    <h3 className="text-sm font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-1">
+                      Comportamiento Diario de Leads
+                    </h3>
+                    <p className="text-xs text-gray-500 dark:text-slate-400 mb-4">
+                      Evolución diaria del volumen de leads registrados por agencia en el periodo.
+                    </p>
+                  </div>
+                  {dailyChartData.length > 0 && uniqueAgencies.length > 0 ? (
+                    <div className="flex-1 min-h-[250px]">
+                      <AreaChart
+                        className="h-64 mt-2"
+                        data={dailyChartData}
+                        index="date"
+                        categories={uniqueAgencies}
+                        colors={["blue", "cyan", "emerald", "amber", "rose", "indigo", "violet"]}
+                        valueFormatter={(number) => `${number} leads`}
+                        yAxisWidth={30}
+                        showAnimation={true}
+                        connectNulls={true}
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center h-48 text-sm text-gray-400">
+                      Sin datos para graficar evolución diaria
+                    </div>
+                  )}
                 </div>
 
                 {/* Tarjeta 3: Modelos de Interés por Agencia */}

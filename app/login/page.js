@@ -125,12 +125,12 @@ const LoginScreenComponent = () => {
                   >
                     Contraseña
                   </label>
-                  <div className="text-sm hidden">
+                  <div className="text-sm">
                     <a
                       href="/recuperarcontrasena"
                       className="font-semibold text-red-600 hover:text-red-500"
                     >
-                      Olvidé la contraseña?
+                      ¿Olvidaste tu contraseña?
                     </a>
                   </div>
                 </div>
