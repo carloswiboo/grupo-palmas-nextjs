@@ -7,17 +7,6 @@ import bcrypt from "bcryptjs";
 import { v4 as uuidv4 } from "uuid";
 import nodemailer from "nodemailer";
 
-/**
- * @swagger
- * /api/private/users:
- *   get:
- *     description: Retorna los usuarios activos
- *     tags:
- *       - Privada - Usuarios
- *     responses:
- *       200:
- *         description: Retorna los usuarios activos
- */
 export async function GET(request) {
   try {
     const data = await prisma.usuarios.findMany({
@@ -37,72 +26,6 @@ export async function GET(request) {
   }
 }
 
-/**
- * @swagger
- * /api/private/users:
- *   post:
- *     description: Crear un nuevo usuario
- *     tags:
- *       - Privada - Usuarios
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               nombre:
- *                 type: string
- *                 description: Nombre de usuario
- *                 example: juanperez
- *               apellidopaterno:
- *                 type: string
- *                 description: Apellido Paterno
- *                 example: Rodriguez
- *               apellidomaterno:
- *                 type: string
- *                 description: Apellido Paterno
- *                 example: Rodriguez
- *               email:
- *                 type: string
- *                 description: Correo electrónico del usuario
- *                 example: juan.perez@example.com
- *               contrasena:
- *                 type: string
- *                 description: Contraseña del usuario
- *                 example: '123456'
- *     responses:
- *       200:
- *         description: Retorna si el usuario fue creado o no
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   description: Indica si el usuario fue creado exitosamente
- *                   example: true
- *                 userId:
- *                   type: string
- *                   description: ID del usuario creado
- *                   example: '60d0fe4f5311236168a109ca'
- *       400:
- *         description: Error en la creación del usuario
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   description: Indica que la creación del usuario falló
- *                   example: false
- *                 message:
- *                   type: string
- *                   description: Descripción del error
- *                   example: 'Email already in use'
- */
 export async function POST(request) {
   var resultado = await request.json();
   try {
@@ -176,23 +99,6 @@ async function hashPassword(password) {
   }
 }
 
-/**
- * @swagger
- * /api/private/users:
- *   delete:
- *     description: Eliminar un usuario (Soft Delete - desactivación / eliminación lógica)
- *     tags:
- *       - Privada - Usuarios
- *     parameters:
- *       - name: id
- *         in: query
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Usuario eliminado correctamente
- */
 export async function DELETE(request) {
   try {
     const url = new URL(request.url);

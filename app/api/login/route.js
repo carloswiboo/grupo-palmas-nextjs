@@ -9,56 +9,6 @@ import { createToken } from "@/lib/createToken";
 import cookie from "cookie";
 
 import { serialize } from "cookie";
-/**
- * @swagger
- * /api/login:
- *   post:
- *     description: Permite iniciar la sesión del usuario al sistema
- *     tags:
- *       - Pública - Login
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               usuario:
- *                 type: string
- *                 description: Correo electrónico de usuario
- *                 example: correo@prueba.com
- *               password:
- *                 type: string
- *                 description: Contraseña de Usuario
- *                 example: contrasenausuario
- *     responses:
- *       200:
- *         description: Retorna el token del usuario
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 token:
- *                   type: string
- *                   description: ID del usuario creado
- *                   example: '60d0fe4f5311236168a109ca60d0fe4f5311236168a109ca60d0fe4f5311236168a109ca60d0fe4f5311236168a109ca60d0fe4f5311236168a109ca60d0fe4f5311236168a109ca'
- *       400:
- *         description: Error en la creación del usuario
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   description: Indica que la creación del usuario falló
- *                   example: false
- *                 message:
- *                   type: string
- *                   description: Descripción del error
- *                   example: 'Usuario y / contraseña no válidos.'
- */
 export async function POST(request) {
   //Obtenemos primero el usuario y contraseña desde la llamada
   var resultado = await request.json();

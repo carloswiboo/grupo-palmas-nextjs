@@ -5,56 +5,6 @@ import { DateTime } from "luxon";
 import { parse } from "handlebars";
 import nodemailer from "nodemailer";
 import bcrypt from "bcryptjs";
-/**
- * @swagger
- * /api/private/users/updatepassword:
- *   patch:
- *     description: Actualizar Contraseña de un usuario
- *     tags:
- *       - Privada - Usuarios
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *              idusuario:
- *                 type: int
- *                 description: Identificador de usuario
- *                 example: 1
- *              contrasena:
- *                 type: string
- *                 description: Contraseña
- *                 example: 123456
- *     responses:
- *       200:
- *         description: Retorna éxito
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   description: Indica que fue actualizada correctamente
- *                   example: true
- *       400:
- *         description: Error
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   description: Indica que falló
- *                   example: false
- *                 message:
- *                   type: string
- *                   description: Descripción del error
- *                   example: 'Email already in use'
- */
 export async function PATCH(request) {
   let resultado = await request.json();
   let id = parseInt(resultado.idusuario);

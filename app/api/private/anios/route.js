@@ -3,17 +3,6 @@ import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { DateTime } from "luxon";
 
-/**
- * @swagger
- * /api/private/anios:
- *   get:
- *     description: Retorna el año público
- *     tags:
- *        - Privada - Años
- *     responses:
- *       200:
- *         description: Regresa los años activos
- */
 export async function GET(request, { params }) {
   try {
     const result = await prisma.anios.findMany({
@@ -28,52 +17,6 @@ export async function GET(request, { params }) {
   }
 }
 
-/**
- * @swagger
- * /api/private/anios:
- *   post:
- *     description: Crear una nuevo año
- *     tags:
- *       - Privada - Años
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               nombre:
- *                 type: string
- *                 description: Nombre del año
- *                 example: 2024
- *     responses:
- *       200:
- *         description: Retorna si la promoción fue creada o no
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   description: Indica que la promoción fue creada correctamente
- *                   example: true
- *       400:
- *         description: Error en la creación del usuario
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   description: Indica que la creación del usuario falló
- *                   example: false
- *                 message:
- *                   type: string
- *                   description: Descripción del error
- *                   example: 'Email already in use'
- */
 export async function POST(request) {
   var resultado = await request.json();
   resultado.status = 1;
@@ -89,53 +32,6 @@ export async function POST(request) {
   }
 }
 
-/**
- * @swagger
- * /api/private/anios:
- *   patch:
- *     description: Actualizar una anio
- *     tags:
- *       - Privada - Años
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               idanios:
- *                 type: int
- *                 description: id del año
- *                 example: 1
- *               nombre:
- *                 type: string
- *                 description: Nombre del año
- *                 example: 2025
- *     responses:
- *       200:
- *         description: Retorna el exito de la actualización
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   description: success
- *                   example: true
- *       400:
- *         description: Error
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   description: algo pasó
- *                   example: false
- *
- */
 export async function PATCH(request) {
   let resultado = await request.json();
   let id = parseInt(resultado.idanios);
@@ -156,52 +52,6 @@ export async function PATCH(request) {
   }
 }
 
-/**
- * @swagger
- * /api/private/promociones:
- *   delete:
- *     description: Eliminar un año
- *     tags:
- *       - Privada - Años
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               id:
- *                 type: int
- *                 description: id de la promoción
- *                 example: 1
- *     responses:
- *       200:
- *         description: Eliminación exitosa
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   description: Eliminado correctamente
- *                   example: true
- *       400:
- *         description: Error al eliminar
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   description: Algo pasó
- *                   example: false
- *                 message:
- *                   type: string
- *                   description: Descripción del error
- *                   example: 'No se pudo eliminar la promoción'
- */
 export async function DELETE(request) {
   try {
     const url = new URL(request.url);

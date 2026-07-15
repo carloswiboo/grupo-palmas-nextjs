@@ -5,17 +5,6 @@ import { NextResponse } from "next/server";
 import { DateTime } from "luxon";
 import nodemailer from "nodemailer";
 
-/**
- * @swagger
- * /api/agencias/:
- *   get:
- *     description: Retorna las agencias activas
- *     tags:
- *       - Público - Agencias
- *     responses:
- *       200:
- *         description: Retorna las agencias activas
- */
 export async function GET(request, { params }) {
   debugger;
   try {

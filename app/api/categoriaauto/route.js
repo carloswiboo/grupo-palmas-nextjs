@@ -5,24 +5,6 @@ import { NextResponse } from "next/server";
 import { DateTime } from "luxon";
 import nodemailer from "nodemailer";
 
-/**
- * @swagger
- * /api/anios/:
- *   get:
- *     description: Retorna el año público
- *     tags:
- *       - Público - Años
- *     parameters:
- *       - in: query
- *         name: id
- *         required: false
- *         schema:
- *           type: integer
- *         description: El año que se desea consultar
- *     responses:
- *       200:
- *         description: Regresa los años activos
- */
 export async function GET(request, { params }) {
   try {
     const result = await prisma.categoriaauto.findMany({

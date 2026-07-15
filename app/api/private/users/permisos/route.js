@@ -2,20 +2,6 @@ import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { verifyAuth } from "@/lib/auth";
 
-/**
- * @swagger
- * /api/private/users/permisos:
- *   get:
- *     description: Obtener las pantallas y los permisos autorizados para un usuario
- *     tags:
- *       - Privada - Usuarios
- *     parameters:
- *       - name: idusuario
- *         in: query
- *         required: true
- *         schema:
- *           type: integer
- */
 export async function GET(request) {
   try {
     const verifiedToken = await verifyAuth(request);
@@ -62,18 +48,6 @@ export async function GET(request) {
   }
 }
 
-/**
- * @swagger
- * /api/private/users/permisos:
- *   post:
- *     description: Actualizar de forma atómica las pantallas autorizadas para un usuario
- *     tags:
- *       - Privada - Usuarios
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- */
 export async function POST(request) {
   try {
     const verifiedToken = await verifyAuth(request);

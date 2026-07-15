@@ -5,17 +5,6 @@ import { NextResponse } from "next/server";
 import { DateTime } from "luxon";
 import nodemailer from "nodemailer";
 
-/**
- * @swagger
- * /api/colores/:
- *   get:
- *     description: Retorna el color activo
- *     tags:
- *       - Público - Colores
- *     responses:
- *       200:
- *         description: Regresa los años activos
- */
 export async function GET(request, { params }) {
   debugger;
   try {

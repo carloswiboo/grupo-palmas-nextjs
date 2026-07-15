@@ -5,17 +5,6 @@ import { NextResponse } from "next/server";
 import { DateTime } from "luxon";
 import nodemailer from "nodemailer";
 
-/**
- * @swagger
- * /api/tiposrazoncontacto/:
- *   get:
- *     description: Retorna el tipo de razón
- *     tags:
- *          - Público - Tipos de Razón de contacto
- *     responses:
- *       200:
- *         description: Retorna el detalle sobre el id seleccionado
- */
 export async function GET(request, { params }) {
   debugger;
   try {
